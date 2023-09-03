@@ -11,7 +11,7 @@ set(SOURCE_FILES main.cpp
         engine/Window/Window.cpp
         engine/Window/Window.h
         engine/Rendering/ShaderManager.h
-        engine/MacrosHelper.h)
+)
 set(BGFX_BUILD_TOOLS ON CACHE INTERNAL "" FORCE)
 
 add_subdirectory("thirdparty/bgfx.cmake")
