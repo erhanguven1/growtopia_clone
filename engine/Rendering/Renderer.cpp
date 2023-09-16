@@ -15,9 +15,8 @@ namespace Engine
     void Renderer::render()
     {
         if(mesh == nullptr)
-        {
             throw std::runtime_error("Mesh is NULL!");
-        }
+
         bgfx::setState(
                 BGFX_STATE_WRITE_R
                 | BGFX_STATE_WRITE_G

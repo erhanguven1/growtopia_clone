@@ -15,7 +15,6 @@
 #include <string>
 
 #define SetResVecFromName(name, val) setResolutionValuesFromName(#name, val)
-#include "../MacrosHelper.h"
 
 namespace Engine
 {

@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.7)
 project(growtopia_clone)
 
 set(CMAKE_CXX_STANDARD 17)
-set(SOURCE_FILES main.cpp
+set(SOURCE_FILES engine/EngineStarter.cpp
         logo.h
         engine/Rendering/Mesh.cpp
         engine/Rendering/Mesh.h
@@ -11,11 +11,25 @@ set(SOURCE_FILES main.cpp
         engine/Window/Window.cpp
         engine/Window/Window.h
         engine/Rendering/ShaderManager.h
+        engine/Gameobject/Gameobject.cpp
+        engine/Gameobject/Gameobject.h
+        engine/Scene/Scene.cpp
+        engine/Scene/Scene.h
+        engine/Common/EngineMacros.h
+        engine/Component/Component.cpp
+        engine/Component/Component.h
+        engine/Gameobject/ImageObject.cpp
+        engine/Gameobject/ImageObject.h
+        engine/Scene/SceneManager.cpp
+        engine/Scene/SceneManager.h
+        growtopia/Scenes/MainMenuScene.cpp
+        growtopia/Scenes/MainMenuScene.h
 )
 set(BGFX_BUILD_TOOLS ON CACHE INTERNAL "" FORCE)
 
 add_subdirectory("thirdparty/bgfx.cmake")
 include_directories("thirdparty/bgfx.cmake/bgfx/include")
+include_directories("engine")
 add_executable(growtopia_clone ${SOURCE_FILES} )
 
 find_package(OpenGL REQUIRED)
