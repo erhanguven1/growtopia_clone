@@ -9,12 +9,41 @@
 #include <unordered_map>
 #include <initializer_list>
 #include <fstream>
+#include <glm/vec2.hpp>
 
 namespace Engine
 {
     enum class EngineShaderPrograms
     {
         Default,
+    };
+
+    class ShaderProgram
+    {
+        friend class ShaderManager;
+    public:
+        inline bgfx::ProgramHandle getProgramHandle(){ return m_programHandle; }
+        void setUniform(const char* name, void* value)
+        {
+            assert(m_uniformHandles.find(name) != m_uniformHandles.end());
+            bgfx::setUniform(m_uniformHandles.at(name), value);
+        }
+        void addUniform(const char* name, const bgfx::UniformType::Enum& uniformType)
+        {
+            m_uniformHandles[name] = bgfx::createUniform(name,uniformType);
+        }
+        ~ShaderProgram()
+        {
+            bgfx::destroy(m_programHandle);
+            for(auto uniformHandlePair : m_uniformHandles)
+            {
+                bgfx::destroy(uniformHandlePair.second);
+            }
+        }
+    protected:
+        explicit ShaderProgram(bgfx::ProgramHandle& pHandle) : m_programHandle(pHandle) {}
+        bgfx::ProgramHandle m_programHandle;
+        std::unordered_map<const char*, bgfx::UniformHandle> m_uniformHandles;
     };
 
     class ShaderManager
@@ -38,14 +67,24 @@ namespace Engine
                 auto m_vertex_shader = loadShader(shader_directory_path + vertexShaderName);
                 auto m_fragment_shader = loadShader(shader_directory_path + fragmentShaderName);
 
-                auto program = bgfx::createProgram(m_vertex_shader, m_fragment_shader, true);
-                shaderPrograms[i] = program;
+                auto programHandle = bgfx::createProgram(m_vertex_shader, m_fragment_shader, true);
+                ShaderProgram* shaderProgram = nullptr;
+
+                switch (i)
+                {
+                    case EngineShaderPrograms::Default:
+                        shaderProgram = new ShaderProgram(programHandle);
+                        shaderProgram->addUniform("a_pos", bgfx::UniformType::Vec4);
+                        break;
+                }
+
+                shaderPrograms[i] = shaderProgram;
             }
         }
-        inline bgfx::ProgramHandle getProgram(const EngineShaderPrograms& programName){ return shaderPrograms[programName];}
+        inline ShaderProgram* getProgram(const EngineShaderPrograms& programName){ return shaderPrograms[programName];}
     private:
         inline static ShaderManager* instance;
-        std::unordered_map<EngineShaderPrograms, bgfx::ProgramHandle> shaderPrograms;
+        std::unordered_map<EngineShaderPrograms, ShaderProgram*> shaderPrograms;
         std::unordered_map<EngineShaderPrograms, const char*> shaderFileNames
         {
             {EngineShaderPrograms::Default,"default"}

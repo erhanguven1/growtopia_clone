@@ -2,7 +2,9 @@
 // Created by erhan güven on 30.08.2023.
 //
 
+#include <glm/vec3.hpp>
 #include "Mesh.h"
+#include "ShaderManager.h"
 
 namespace Engine
 {

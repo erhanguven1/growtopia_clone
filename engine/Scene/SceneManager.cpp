@@ -6,12 +6,13 @@
 
 namespace Engine
 {
-    void SceneManager::setCurrentScene(Scene *&scene)
+    void SceneManager::setCurrentScene(Scene& scene)
     {
         if(currentScene != nullptr)
         {
             currentScene->clear();
         }
-        currentScene = scene;
+        currentScene = &scene;
+        currentScene->start();
     }
 } // Engine

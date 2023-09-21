@@ -20,11 +20,12 @@ namespace Engine
 
         CREATE_VIRTUAL_START_UPDATE;
 
-        template<class T, typename ... Args>
-        void spawn(Args&&... args)
+        template<class T = Gameobject, typename ... Args>
+        T* spawn(Args&&... args)
         {
             T* gameObject = new T(std::move(args...));
             newlyCreatedGameObjects.push_back(gameObject);
+            return gameObject;
         }
     private:
         const unsigned int m_SceneId;

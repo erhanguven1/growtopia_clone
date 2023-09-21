@@ -7,6 +7,7 @@
 
 #include <Common/EngineMacros.h>
 #include "Rendering/Renderer.h"
+#include "Transform.h"
 
 namespace Engine
 {
@@ -24,16 +25,31 @@ namespace Engine
             renderer = std::make_unique<Engine::Renderer>();
         }
 
-        inline Engine::Renderer getRenderer()
+        inline void tryRender()
+        {
+            transform->update();
+
+            if(renderer)
+                renderer->render();
+        }
+
+        inline Engine::Renderer* getRenderer()
         {
             assert(renderer != nullptr);
-            return *renderer;
+            return renderer.get();
+        }
+
+        inline Engine::Transform* getTransform()
+        {
+            assert(transform != nullptr);
+            return transform.get();
         }
 
         inline uint getLayer() const { return layer; }
 
     private:
         std::unique_ptr<Engine::Renderer> renderer;
+        std::unique_ptr<Engine::Transform> transform;
         uint layer = 1;
         bool initialized = false;
     };

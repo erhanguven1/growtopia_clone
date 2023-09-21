@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.7)
 project(growtopia_clone)
 
 set(CMAKE_CXX_STANDARD 17)
-set(SOURCE_FILES engine/EngineStarter.cpp
+set(SOURCE_FILES engine/EngineStarter.hpp
         logo.h
         engine/Rendering/Mesh.cpp
         engine/Rendering/Mesh.h
@@ -22,8 +22,11 @@ set(SOURCE_FILES engine/EngineStarter.cpp
         engine/Gameobject/ImageObject.h
         engine/Scene/SceneManager.cpp
         engine/Scene/SceneManager.h
-        growtopia/Scenes/MainMenuScene.cpp
-        growtopia/Scenes/MainMenuScene.h
+        growtopia_clone/Scenes/MainMenuScene.cpp
+        growtopia_clone/Scenes/MainMenuScene.h
+        growtopia_clone/entrypoint.cpp
+        engine/Gameobject/Transform.cpp
+        engine/Gameobject/Transform.h
 )
 set(BGFX_BUILD_TOOLS ON CACHE INTERNAL "" FORCE)
 

@@ -36,7 +36,7 @@ namespace Engine
             for(auto* gameObject : pair.second)
             {
                 gameObject->update(dt);
-                gameObject->getRenderer().render();
+                gameObject->tryRender();
             }
         }
     }

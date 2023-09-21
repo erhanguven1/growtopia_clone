@@ -13,9 +13,9 @@ namespace Engine
     class ImageObject : public Gameobject
     {
     public:
-        ImageObject() : Gameobject(1) {};
-        explicit ImageObject(uint layerIndex) : Gameobject(layerIndex) {}
-        explicit ImageObject(const char* imagePath);
+        ImageObject() : ImageObject("",1) {}
+        explicit ImageObject(uint layerIndex) : ImageObject("",layerIndex) {}
+        explicit ImageObject(const char* imagePath) : ImageObject(imagePath,1) {}
         ImageObject(const char* imagePath, uint layerIndex);
 
         void start() override;

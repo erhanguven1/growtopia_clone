@@ -13,13 +13,18 @@ namespace Engine
     class SceneManager
     {
     public:
-        static void setCurrentScene(Scene*& scene);
+        static void setCurrentScene(Scene& scene);
         inline static void spawnInCurrentScene()
         {
             assert(currentScene != nullptr);
         }
+        inline static Scene* getCurrentScene()
+        {
+            assert(currentScene != nullptr);
+            return currentScene;
+        }
     private:
-        static Scene* currentScene;
+        inline static Scene* currentScene;
     };
 
 } // Engine

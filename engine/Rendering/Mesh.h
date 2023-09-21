@@ -28,10 +28,10 @@ namespace Engine
         bgfx::IndexBufferHandle indexBuffer;
 
         PosColorVertex vertices[4] = {
-                { -0.5f, -0.5f, 0x993333FF }, // Vertex 0: Position (-0.5, -0.5, 0), Color Blue
-                { 0.5f, -0.5f, 0x993333FF },  // Vertex 1: Position (0.5, -0.5, 0), Color Green
-                { 0.5f, 0.5f, 0x333399FF },   // Vertex 2: Position (0.5, 0.5, 0), Color Red
-                { -0.5f, 0.5f, 0x333399FF }   // Vertex 2: Position (-0.5, 0.5, 0), Color Red
+                { -0.5f, -0.5f, 0xFFFFFFFF }, // Vertex 0: Position (-0.5, -0.5, 0), Color Blue
+                { 0.5f, -0.5f, 0xFFFFFFFF },  // Vertex 1: Position (0.5, -0.5, 0), Color Green
+                { 0.5f, 0.5f, 0xFFFFFFFF },   // Vertex 2: Position (0.5, 0.5, 0), Color Red
+                { -0.5f, 0.5f, 0xFFFFFFFF }   // Vertex 2: Position (-0.5, 0.5, 0), Color Red
         };
 
         const uint16_t kTriangleIndices[6] =

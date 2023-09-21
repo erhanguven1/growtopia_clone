@@ -6,14 +6,9 @@
 
 namespace Engine
 {
-    ImageObject::ImageObject(const char *imagePath) : Gameobject(1)
-    {
-
-    }
-
     ImageObject::ImageObject(const char *imagePath, const uint layerIndex)  : Gameobject(layerIndex)
     {
-
+        addRenderer();
     }
 
     void ImageObject::start()

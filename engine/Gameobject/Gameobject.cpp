@@ -9,6 +9,6 @@ namespace Engine
 
     Gameobject::Gameobject(uint layerIndex) : layer(layerIndex)
     {
-
+        transform = std::make_unique<Engine::Transform>();
     }
 } // Engine
