@@ -27,18 +27,36 @@ set(SOURCE_FILES engine/EngineStarter.hpp
         growtopia_clone/entrypoint.cpp
         engine/Gameobject/Transform.cpp
         engine/Gameobject/Transform.h
+        engine/Networking/Client.cpp
+        engine/Networking/Client.h
 )
+
+set(NETWORKING_SOURCE_FILES
+        engine/Networking/NetworkStructs.h)
+
+set(SERVER_SOURCE_FILES server/Server.cpp)
+
 set(BGFX_BUILD_TOOLS ON CACHE INTERNAL "" FORCE)
 
 add_subdirectory("thirdparty/bgfx.cmake")
 include_directories("thirdparty/bgfx.cmake/bgfx/include")
 include_directories("engine")
-add_executable(growtopia_clone ${SOURCE_FILES} )
+
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}")
+
+find_package(ENet REQUIRED)
+include_directories(${ENET_INCLUDE_DIRS})
+link_libraries(${ENET_LIBRARIES})
+
+add_executable(growtopia_clone ${SOURCE_FILES} ${NETWORKING_SOURCE_FILES})
+add_executable(growtopia_clone_second ${SOURCE_FILES} ${NETWORKING_SOURCE_FILES})
+add_executable(server_exe ${SERVER_SOURCE_FILES} ${NETWORKING_SOURCE_FILES})
 
 find_package(OpenGL REQUIRED)
 find_package(glfw3 3.3 REQUIRED)
 
 target_link_libraries(growtopia_clone bgfx example-common ${OPENGL_LIBRARIES} glfw)
+target_link_libraries(growtopia_clone_second bgfx example-common ${OPENGL_LIBRARIES} glfw)
 
 add_custom_target(
         build-shaders

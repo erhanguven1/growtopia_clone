@@ -5,6 +5,7 @@
 #include "Window/Window.h"
 #include "Rendering/ShaderManager.h"
 #include "Scene/SceneManager.h"
+#include "Networking/Client.h"
 
 class EngineStarter
 {

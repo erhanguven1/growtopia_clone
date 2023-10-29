@@ -7,6 +7,7 @@
 
 #include <Scene/SceneManager.h>
 #include "Gameobject/ImageObject.h"
+#include "Networking/Client.h"
 
 namespace Game
 {
@@ -22,6 +23,9 @@ namespace Game
         void update(float) override;
     private:
         Engine::ImageObject* imageObject = nullptr;
+        int syncTest;
+        std::function<void(int)> onChangeSyncTest;
+        void RPC_UpdatePosition(const SyncVarTypeVariant& val, bool isMine);
     };
 
 } // Game

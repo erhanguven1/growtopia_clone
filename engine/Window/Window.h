@@ -62,7 +62,6 @@ namespace Engine
             }
 
             resInfo.resolution = glm::vec2(atoi(width.c_str()), atoi(height.c_str()));
-            printf("yes");
         }
         static void InitializeResolutions()
         {
