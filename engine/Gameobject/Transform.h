@@ -18,6 +18,10 @@ namespace Engine
         {
             m_position += delta;
         }
+        inline void setScale(glm::vec2& scale)
+        {
+            m_scale = scale;
+        }
     private:
         glm::vec2 m_position = glm::vec2(0.0f);
         glm::vec2 m_scale = glm::vec2(1.0f);

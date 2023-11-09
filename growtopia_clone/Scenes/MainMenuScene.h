@@ -8,6 +8,7 @@
 #include <Scene/SceneManager.h>
 #include "Gameobject/ImageObject.h"
 #include "Networking/Client.h"
+#include "../Player/Player.h"
 
 namespace Game
 {
@@ -22,10 +23,9 @@ namespace Game
         void start() override;
         void update(float) override;
     private:
-        Engine::ImageObject* imageObject = nullptr;
+        std::vector<Player*> players;
         int syncTest;
         std::function<void(int)> onChangeSyncTest;
-        void RPC_UpdatePosition(const SyncVarTypeVariant& val, bool isMine);
     };
 
 } // Game

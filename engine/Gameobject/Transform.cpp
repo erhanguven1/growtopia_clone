@@ -21,5 +21,6 @@ namespace Engine
     {
         ShaderProgram* shaderProgram = Engine::ShaderManager::getInstance()->getProgram(EngineShaderPrograms::Default);
         shaderProgram->setUniform("a_pos", &m_position);
+        shaderProgram->setUniform("a_scale", &m_scale);
     }
 } // Engine

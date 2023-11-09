@@ -29,6 +29,10 @@ set(SOURCE_FILES engine/EngineStarter.hpp
         engine/Gameobject/Transform.h
         engine/Networking/Client.cpp
         engine/Networking/Client.h
+        growtopia_clone/Player/Player.cpp
+        growtopia_clone/Player/Player.h
+        engine/Input/InputHandler.h
+        engine/Input/InputHandler.cpp
 )
 
 set(NETWORKING_SOURCE_FILES

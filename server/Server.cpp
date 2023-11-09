@@ -181,7 +181,7 @@ void CMD_MoveTo(const SyncVarTypeVariant& val, int connectId)
     rmData.m_parameterType = (uint)SyncVarTypes::VEC2;
     rmData.receiverId = connectId;
     memcpy(rmData.m_parameter, &direction, sizeof(direction));
-    memcpy(rmData.m_methodName, "RPC_UpdatePosition", strlen("RPC_UpdatePosition"));
+    memcpy(rmData.m_methodName, "RPC_UpdatePlayerPosition", strlen("RPC_UpdatePlayerPosition"));
 
     memcpy(msgData.data, &rmData, sizeof(rmData));
 
@@ -189,4 +189,3 @@ void CMD_MoveTo(const SyncVarTypeVariant& val, int connectId)
 
     enet_host_broadcast(server, 0, packet);
 }
-

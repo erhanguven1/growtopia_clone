@@ -35,15 +35,19 @@ namespace Engine
         }
 
         if (enet_host_service(client, &event, 5000) > 0 &&
-            event.type == ENET_EVENT_TYPE_CONNECT) {
+            event.type == ENET_EVENT_TYPE_CONNECT)
+        {
             puts("Connection to 127.0.0.1:7777 succeeded.");
-            PlayerData pData;
-            memcpy(pData.m_name, "erhan",sizeof("erhan"));
-            pData.m_posX = 3.2f;
-            pData.m_posY = 5.0f;
-            //sendPlayerData(pData);
-            //callCommand("RPC_Test");
+            connectionId = event.peer->connectID;
             printf("Connection ID = %u",client->peers[0].connectID);
+
+            if(!commandController.commands["RPC_OnConnect"].empty())
+            {
+                for(auto& cmd : commandController.commands["RPC_OnConnect"])
+                {
+                    cmd((int)connectionId,connectionId);
+                }
+            }
         } else {
             enet_peer_reset(server);
             puts("Connection to 127.0.0.1:7777 failed.");
@@ -51,7 +55,7 @@ namespace Engine
         }
     }
 
-    void Client::recvLoop()
+    void Client::receiveLoop()
     {
         ENetEvent event;
 
@@ -121,8 +125,6 @@ namespace Engine
 
                 auto varType = (SyncVarTypes)rmCallData.m_parameterType;
 
-                bool isMine = event.peer->connectID == rmCallData.receiverId;
-
                 switch (varType)
                 {
                     case SyncVarTypes::INT:
@@ -144,7 +146,14 @@ namespace Engine
                         glm::vec2 param;
                         memcpy(&param, rmCallData.m_parameter, sizeof(glm::vec2));
                         printf("%f,%f", param.x, param.y);
-                        commandController.commands[rmCallData.m_methodName](param,isMine);
+                        if(!commandController.commands[rmCallData.m_methodName].empty())
+                        {
+                            for(auto& cmd : commandController.commands[rmCallData.m_methodName])
+                            {
+                                cmd(param,rmCallData.receiverId);
+                            }
+                        }
+
                         break;
                     }
                 }
@@ -152,17 +161,6 @@ namespace Engine
                 printf("\nreceived rpc!");
                 break;
         }
-    }
-
-    void Client::sendPlayerData(const PlayerData &playerData)
-    {
-        MsgData msgData;
-        msgData.type = (int)MessageTypes::PlayerData;
-        memcpy(msgData.data, &playerData, sizeof(PlayerData));
-
-        auto packet = enet_packet_create(&msgData,sizeof(uint)+sizeof(PlayerData),NULL);
-
-        enet_peer_send(server,0,packet);
     }
 
     void Client::callCommand(const char *methodName, const SyncVarTypeVariant& param)
@@ -180,11 +178,4 @@ namespace Engine
 
         enet_peer_send(server,0,packet);
     }
-
-    void Client::RPC_UpdatePlayerPosition(const SyncVarTypeVariant& val, bool isMine)
-    {
-        glm::vec2 position = std::get<glm::vec2>(val);
-        printf("position= %f,%f",position.x,position.y);
-    }
-
 } // Engine

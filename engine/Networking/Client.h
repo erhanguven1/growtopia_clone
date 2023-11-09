@@ -34,14 +34,21 @@ namespace Engine
     class CommandController
     {
     public:
-        std::unordered_map<std::string, std::function<void(const SyncVarTypeVariant&, bool)>> commands;
+        std::unordered_map<std::string, std::vector<std::function<void(const SyncVarTypeVariant&, uint)>>> commands;
     };
 
     class Client final
     {
     public:
-        SyncVarHandler syncVarHandler;
-        CommandController commandController;
+        inline SyncVarHandler* getSyncVarHandler()
+        {
+            return &syncVarHandler;
+        }
+
+        inline CommandController* getCommandController()
+        {
+            return &commandController;
+        }
 
         inline static Client* getInstance()
         {
@@ -54,18 +61,20 @@ namespace Engine
         }
 
         int connectTo(const char* ip_address, const int& port);
-        void recvLoop();
+        void receiveLoop();
         void callCommand(const char* methodName, const SyncVarTypeVariant& param);
-        void sendPlayerData(const PlayerData& playerData);
 
-    private:
-        void RPC_UpdatePlayerPosition(const SyncVarTypeVariant& val, bool isMine);
+        inline uint getConnectionId() const{return connectionId;}
 
     private:
         Client(){}
         inline static Client* instance = nullptr;
+        SyncVarHandler syncVarHandler;
+        CommandController commandController;
         ENetPeer* server;
         ENetHost *client;
+
+        uint connectionId;
 
         void onReceivePacket(const ENetEvent& event);
     };

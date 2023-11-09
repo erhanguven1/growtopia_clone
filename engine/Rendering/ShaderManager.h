@@ -75,6 +75,7 @@ namespace Engine
                     case EngineShaderPrograms::Default:
                         shaderProgram = new ShaderProgram(programHandle);
                         shaderProgram->addUniform("a_pos", bgfx::UniformType::Vec4);
+                        shaderProgram->addUniform("a_scale", bgfx::UniformType::Vec4);
                         break;
                 }
 

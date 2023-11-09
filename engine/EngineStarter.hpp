@@ -6,6 +6,7 @@
 #include "Rendering/ShaderManager.h"
 #include "Scene/SceneManager.h"
 #include "Networking/Client.h"
+#include "Input/InputHandler.h"
 
 class EngineStarter
 {
@@ -14,14 +15,23 @@ public:
     {
         Engine::Window::InitializeResolutions();
         window = new Engine::Window(resolutionInfo, title);
+        glfwWindow = window->getGlfwWindow();
 
         shaderManager.initShaders({Engine::EngineShaderPrograms::Default});
+
+        Engine::InputHandler* inputHandler = new Engine::InputHandler();
+
+        glfwSetKeyCallback(glfwWindow, [](GLFWwindow* window, int key, int scancode, int action, int mods)
+        {
+            Engine::InputHandler* instance = static_cast<Engine::InputHandler*>(glfwGetWindowUserPointer(window));
+            instance->keyEvent(key, action);
+        });
+
+        glfwSetWindowUserPointer(glfwWindow, &inputHandler);
     }
 
     void loop()
     {
-        glfwWindow = window->getGlfwWindow();
-
         float fps = 30.0f;
         float deltaTime;
         std::chrono::steady_clock::time_point lastUpdate;
