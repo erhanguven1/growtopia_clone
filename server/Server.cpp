@@ -7,10 +7,13 @@
 #include <unordered_map>
 #include <vector>
 #include <string>
+#include <iostream>
 
 void onReceivePacket(const ENetEvent& event);
 void registerRpcMethodsToCommands();
 void CMD_MoveTo(const SyncVarTypeVariant&, int);
+
+float xPos = 0;
 
 std::unordered_map<enet_uint32 , ENetPeer*> connections;
 std::vector<SyncVarTypeVariant> variables;
@@ -34,7 +37,6 @@ int main (int argc, char ** argv)
     }
     atexit (enet_deinitialize);
 
-    ENetEvent event;
     ENetAddress address;
 
     /* Bind the server to the default localhost.     */
@@ -58,43 +60,45 @@ int main (int argc, char ** argv)
 
     registerRpcMethodsToCommands();
 
+    std::chrono::steady_clock::time_point lastUpdate;
+
+    ENetEvent event;
+    enet_host_service (server, &event, 10000);
     // gameloop
     while(true)
     {
-        ENetEvent event;
-        /* Wait up to 1000 milliseconds for an event. */
-        while (enet_host_service (server, &event, 1000) > 0)
+        while (enet_host_service(server, &event, 30) > 0)
         {
-            switch (event.type)
-            {
-                case ENET_EVENT_TYPE_CONNECT:
-                {
-                    printf ("A new client connected from %x:%u.\n",
-                            event.peer -> address.host,
-                            event.peer -> address.port);
+            switch (event.type) {
+                case ENET_EVENT_TYPE_CONNECT: {
+                    printf("A new client connected from %x:%u.\n",
+                           event.peer->address.host,
+                           event.peer->address.port);
 
                     connections[event.peer->connectID] = event.peer;
-                    printf("Connection ID: %u\n",event.peer->connectID);
+                    printf("Connection ID: %u\n", event.peer->connectID);
                     break;
                 }
                 case ENET_EVENT_TYPE_RECEIVE:
-                    printf ("A packet of length %u containing %s was received from %s on channel %u.\n",
-                            event.packet -> dataLength,
-                            event.packet -> data,
-                            event.peer -> data,
-                            event.channelID);
-
-                    printf("testing");
+                {
+                    printf("A packet of length %u containing %s was received from %s on channel %u, rtt %u.\n",
+                           event.packet->dataLength,
+                           event.packet->data,
+                           event.peer->data,
+                           event.channelID,
+                           event.peer->roundTripTime);
 
                     onReceivePacket(event);
                     /* Clean up the packet now that we're done using it. */
-                    enet_packet_destroy (event.packet);
+                    enet_packet_destroy(event.packet);
                     break;
-
+                }
                 case ENET_EVENT_TYPE_DISCONNECT:
                     printf ("%s disconnected.\n", event.peer -> data);
                     /* Reset the peer's client information. */
-                    event.peer -> data = NULL;
+                    event.peer -> data = nullptr;
+                case ENET_EVENT_TYPE_NONE:
+                    break;
             }
         }
     }
@@ -106,7 +110,6 @@ int main (int argc, char ** argv)
 
 void onReceivePacket(const ENetEvent& event)
 {
-    printf("testing");
     MsgData msgData;
     memcpy(&msgData, event.packet->data, event.packet->dataLength);
 
@@ -172,7 +175,10 @@ void registerRpcMethodsToCommands()
 void CMD_MoveTo(const SyncVarTypeVariant& val, int connectId)
 {
     glm::vec2 direction = std::get<glm::vec2>(val);
-    printf("Received command! Message: %d", direction);
+    xPos += direction.x;
+    printf("\nPosition: %f\n", xPos);
+
+    glm::vec2 pos = glm::vec2(xPos,0);
 
     MsgData msgData;
     msgData.type = (uint)(MessageTypes::ClientRPC);
@@ -180,7 +186,7 @@ void CMD_MoveTo(const SyncVarTypeVariant& val, int connectId)
     RemoteFunctionCallData rmData;
     rmData.m_parameterType = (uint)SyncVarTypes::VEC2;
     rmData.receiverId = connectId;
-    memcpy(rmData.m_parameter, &direction, sizeof(direction));
+    memcpy(rmData.m_parameter, &pos, sizeof(pos));
     memcpy(rmData.m_methodName, "RPC_UpdatePlayerPosition", strlen("RPC_UpdatePlayerPosition"));
 
     memcpy(msgData.data, &rmData, sizeof(rmData));

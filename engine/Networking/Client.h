@@ -66,6 +66,10 @@ namespace Engine
 
         inline uint getConnectionId() const{return connectionId;}
 
+        void callRPCs();
+        void callRPC(RemoteFunctionCallData& rmCallData);
+        std::vector<RemoteFunctionCallData*> queuedCalls;
+
     private:
         Client(){}
         inline static Client* instance = nullptr;

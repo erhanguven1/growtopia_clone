@@ -33,6 +33,7 @@ set(SOURCE_FILES engine/EngineStarter.hpp
         growtopia_clone/Player/Player.h
         engine/Input/InputHandler.h
         engine/Input/InputHandler.cpp
+        engine/Physics/PhysicsConstants.h
 )
 
 set(NETWORKING_SOURCE_FILES

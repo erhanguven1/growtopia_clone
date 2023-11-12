@@ -31,6 +31,7 @@ namespace Engine
         const unsigned int m_SceneId;
         std::map<unsigned int, std::vector<Engine::Gameobject*>> gameObjects;
         std::vector<Engine::Gameobject*> newlyCreatedGameObjects;
+        void checkCollisionsWithGameObject(Engine::Gameobject& gameObject);
         void clear();
     };
 

@@ -3,6 +3,7 @@
 //
 
 #include "Scene.h"
+#include "Networking/Client.h"
 
 namespace Engine
 {
@@ -20,6 +21,8 @@ namespace Engine
 
     void Scene::update(float dt)
     {
+        Client::getInstance()->callRPCs();
+
         if(!newlyCreatedGameObjects.empty())
         {
             for(const auto& gameObject : newlyCreatedGameObjects)
@@ -36,7 +39,86 @@ namespace Engine
             for(auto* gameObject : pair.second)
             {
                 gameObject->update(dt);
-                gameObject->tryRender();
+                if(gameObject->getTransform()->getIsRigidBody())
+                {
+                    checkCollisionsWithGameObject(*gameObject);
+                }
+                gameObject->tryRender(dt);
+            }
+        }
+    }
+
+    void Scene::checkCollisionsWithGameObject(Gameobject& gameObject)
+    {
+        for (const auto& pair : gameObjects)
+        {
+            for(auto* go : pair.second)
+            {
+                if(go != &gameObject && go->getTransform()->hasCollider)
+                {
+                    auto* transformA = gameObject.getTransform();
+                    auto* transformB = go->getTransform();
+
+                    auto& positionA = transformA->getPosition();
+                    auto& positionB = transformB->getPosition();
+
+                    auto& scaleA = transformA->getScale();
+                    auto& scaleB = transformB->getScale();
+
+                    float leftA = positionA.x - scaleA.x * .5f;
+                    float rightA = positionA.x + scaleA.x * .5f;
+
+                    float leftB = positionB.x - scaleB.x * .5f;
+                    float rightB = positionB.x + scaleB.x * .5f;
+
+                    float upA = positionA.y + scaleA.y * .5f;
+                    float downA = positionA.y - scaleA.y * .5f;
+
+                    float upB = positionB.y + scaleB.y * .5f;
+                    float downB = positionB.y - scaleB.y * .5f;
+
+                    if((leftA < rightB &&
+                            rightA > leftB &&
+                            downA < upB &&
+                            upA > downB))
+                    {
+                        float overlapX = std::min(positionA.x + scaleA.x * .5f - positionB.x + scaleB.x *.5f, positionB.x + scaleB.x * .5f - positionA.x + scaleA.x * .5f);
+                        float overlapY = std::min(positionA.y + scaleA.y - positionB.y, positionB.y + scaleB.y - positionA.y);
+
+                        if (overlapX < overlapY)
+                        {
+                            // Adjust horizontally
+                            if (positionA.x + scaleA.x/2.0f < positionB.x + scaleB.x/2.0f)
+                            {
+                                // Player is to the left of the obstacle
+                                positionA.x -= overlapX;
+                            } else
+                            {
+                                // Player is to the right of the obstacle
+                                positionA.x += overlapX;
+                            }
+                        } else
+                        {
+                            // Adjust vertically
+                            if (positionA.y + scaleA.y / 2 < positionB.y + scaleB.y / 2)
+                            {
+                                positionA.y -= overlapY;
+                                if(transformA->getIsRigidBody() && transformA->getRigidBody().velocity.y < 0)
+                                {
+                                    transformA->getRigidBody().velocity.y = 0;
+                                }
+                            } else
+                            {
+                                // Player is below the obstacle
+                                positionA.y += overlapY;
+                                if(transformA->getIsRigidBody() && transformA->getRigidBody().velocity.y < 0)
+                                {
+                                    transformA->getRigidBody().velocity.y = 0;
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
     }

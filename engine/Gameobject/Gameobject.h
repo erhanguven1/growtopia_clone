@@ -25,9 +25,9 @@ namespace Engine
             renderer = std::make_unique<Engine::Renderer>();
         }
 
-        inline void tryRender()
+        inline void tryRender(float dt)
         {
-            transform->update();
+            transform->update(dt);
 
             if(renderer)
                 renderer->render();

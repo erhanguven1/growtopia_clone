@@ -32,7 +32,7 @@ public:
 
     void loop()
     {
-        float fps = 30.0f;
+        float fps = 60.0f;
         float deltaTime;
         std::chrono::steady_clock::time_point lastUpdate;
 
@@ -41,16 +41,18 @@ public:
             auto now = std::chrono::steady_clock::now();
             deltaTime = std::chrono::duration_cast<std::chrono::microseconds>(now - lastUpdate).count() / 1000000.0f;
 
-            if(deltaTime > 1 / fps)
-            {
-                lastUpdate = now;
-            }
-
             glfwPollEvents();
+
+            if(deltaTime < 1 / fps)
+            {
+                continue;
+            }
+            lastUpdate = now;
 
             bgfx::setViewClear(0, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH, 0x3c3c3cff, 0.0f, 0);
 
-            Engine::SceneManager::getCurrentScene()->update(deltaTime);
+            if(deltaTime < 100.0f)
+                Engine::SceneManager::getCurrentScene()->update(deltaTime);
 
             bgfx::frame();
 

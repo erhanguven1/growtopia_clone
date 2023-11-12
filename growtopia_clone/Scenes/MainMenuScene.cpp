@@ -15,6 +15,17 @@ namespace Game
             syncTest = newVal;
         };
 
+        auto ground = spawn<Engine::ImageObject>(1);
+        ground->getTransform()->setPositionY(-.5f);
+        ground->getTransform()->setScaleY(.5f);
+        ground->getTransform()->hasCollider = true;
+
+        auto ground2 = spawn<Engine::ImageObject>(1);
+        ground2->getTransform()->setPositionX(-.5f);
+        ground2->getTransform()->setScaleX(.75f);
+        ground2->getTransform()->setScaleY(.5f);
+        ground2->getTransform()->hasCollider = true;
+
         auto func = [&](const SyncVarTypeVariant& val, int connId)
         {
             spawn<Player>(connId);

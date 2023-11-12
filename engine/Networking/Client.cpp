@@ -120,45 +120,12 @@ namespace Engine
             case MessageTypes::Command:
                 break;
             case MessageTypes::ClientRPC:
-                RemoteFunctionCallData rmCallData;
-                memcpy(&rmCallData, msgData.data, sizeof(RemoteFunctionCallData));
+                auto* rmCallData = new RemoteFunctionCallData;
+                memcpy(rmCallData, msgData.data, sizeof(RemoteFunctionCallData));
 
-                auto varType = (SyncVarTypes)rmCallData.m_parameterType;
+                queuedCalls.push_back(rmCallData);
+                printf("\nreceived rpc!\n");
 
-                switch (varType)
-                {
-                    case SyncVarTypes::INT:
-                    {
-                        int param;
-                        memcpy(&param, rmCallData.m_parameter, sizeof(int));
-                        printf("%d", param);
-                        break;
-                    }
-                    case SyncVarTypes::FLOAT:
-                    {
-                        float param;
-                        memcpy(&param, rmCallData.m_parameter, sizeof(float));
-                        printf("%f", param);
-                        break;
-                    }
-                    case SyncVarTypes::VEC2:
-                    {
-                        glm::vec2 param;
-                        memcpy(&param, rmCallData.m_parameter, sizeof(glm::vec2));
-                        printf("%f,%f", param.x, param.y);
-                        if(!commandController.commands[rmCallData.m_methodName].empty())
-                        {
-                            for(auto& cmd : commandController.commands[rmCallData.m_methodName])
-                            {
-                                cmd(param,rmCallData.receiverId);
-                            }
-                        }
-
-                        break;
-                    }
-                }
-
-                printf("\nreceived rpc!");
                 break;
         }
     }
@@ -177,5 +144,55 @@ namespace Engine
         auto packet = enet_packet_create(&msgData,sizeof(uint)+sizeof(RemoteFunctionCallData),NULL);
 
         enet_peer_send(server,0,packet);
+    }
+
+    void Client::callRPCs()
+    {
+        if(!queuedCalls.empty())
+        {
+            callRPC(*queuedCalls[0]);
+            delete queuedCalls[0];
+            queuedCalls.erase(queuedCalls.begin());;
+        }
+    }
+
+    void Client::callRPC(RemoteFunctionCallData& rmCallData)
+    {
+        auto varType = (SyncVarTypes)rmCallData.m_parameterType;
+
+        switch (varType)
+        {
+            case SyncVarTypes::INT:
+            {
+                int param;
+                memcpy(&param, rmCallData.m_parameter, sizeof(int));
+                printf("%d", param);
+                break;
+            }
+            case SyncVarTypes::FLOAT:
+            {
+                float param;
+                memcpy(&param, rmCallData.m_parameter, sizeof(float));
+                printf("%f", param);
+                break;
+            }
+            case SyncVarTypes::VEC2:
+            {
+                glm::vec2 param;
+                memcpy(&param, rmCallData.m_parameter, sizeof(glm::vec2));
+                printf("%f,%f", param.x, param.y);
+                if(!commandController.commands[rmCallData.m_methodName].empty())
+                {
+                    for(auto& cmd : commandController.commands[rmCallData.m_methodName])
+                    {
+                        cmd(param,rmCallData.receiverId);
+                    }
+                }
+
+                break;
+            }
+        }
+
+        printf("\nreceived rpc!");
     }
 } // Engine
