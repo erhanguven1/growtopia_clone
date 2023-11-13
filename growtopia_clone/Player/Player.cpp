@@ -9,13 +9,14 @@
 
 namespace Game
 {
-    Player::Player(uint connId) : Gameobject(99), connectionId(connId)
+    Player::Player(uint connId, bool isMine) : Gameobject(99), connectionId(connId), m_isMine(isMine)
     {
         character = Engine::SceneManager::getCurrentScene()->spawn<Engine::ImageObject>(1);
         glm::vec2 scale = glm::vec2(.25f,.5f);
         character->getTransform()->setScale(scale);
-        character->getTransform()->setIsRigidBody(true);
+        character->getTransform()->setIsRigidBody(m_isMine);
         character->getTransform()->setPositionY(1.0f);
+        character->getTransform()->hasCollider = true;
 
         auto* client = Engine::Client::getInstance();
         if(client->getConnectionId() == connectionId)
@@ -33,31 +34,34 @@ namespace Game
     {
         if(connId == connectionId)
         {
-            glm::vec2 position = (std::get<glm::vec2>(val));
-            printf("\nposition= %f,%f",position.x,position.y);
-            character->getTransform()->setPositionX(position.x);
+            glm::vec2 newPosition = (std::get<glm::vec2>(val));
+            character->getTransform()->setPositionX(newPosition.x);
+            character->getTransform()->setPositionY(newPosition.y);
         }
     }
 
     void Player::update(float dt)
     {
         auto client = Engine::Client::getInstance();
-        if(Engine::InputHandler::isPressingKey(GLFW_KEY_D))
+        if(client->getConnectionId() == connectionId)
         {
-            //client->callCommand("CMD_MoveTo", glm::vec2(.01f,0));
-            auto v = glm::vec2(.01f,0);
-            character->getTransform()->addToPosition(v);
-        }
-        if(Engine::InputHandler::isPressingKey(GLFW_KEY_A))
-        {
-            //client->callCommand("CMD_MoveTo", glm::vec2(-.01f,0));
-            auto v = glm::vec2(-.01f,0);
-            character->getTransform()->addToPosition(v);
-        }
-        if(Engine::InputHandler::onPressKey(GLFW_KEY_W))
-        {
-            glm::vec2 up = glm::vec2(0,1000.0f);
-            character->getTransform()->getRigidBody().setVelocity(up);
+            if(Engine::InputHandler::isPressingKey(GLFW_KEY_D))
+            {
+                auto v = glm::vec2(.01f,0);
+                character->getTransform()->addToPosition(v);
+            }
+            if(Engine::InputHandler::isPressingKey(GLFW_KEY_A))
+            {
+                auto v = glm::vec2(-.01f,0);
+                character->getTransform()->addToPosition(v);
+            }
+            if(Engine::InputHandler::onPressKey(GLFW_KEY_W))
+            {
+                auto v = glm::vec2(0,1000.0f);
+                character->getTransform()->getRigidBody().setVelocity(v);
+            }
+
+            client->callCommand("CMD_MoveTo", character->getTransform()->getPosition());
         }
     }
 } // Game

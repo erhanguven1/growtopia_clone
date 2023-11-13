@@ -12,7 +12,7 @@ namespace Game
     class Player : public Engine::Gameobject
     {
     public:
-        explicit Player(uint connId);
+        Player(uint connId, bool isMine);
         inline static Player* myPlayer = nullptr;
         void start() override{}
         void update(float) override;
@@ -20,6 +20,7 @@ namespace Game
         Engine::ImageObject* character = nullptr;
         uint connectionId;
         void RPC_UpdatePlayerPosition(const std::variant<int, float, glm::vec2> &val, int connId) const;
+        bool m_isMine;
     };
 
 } // Game

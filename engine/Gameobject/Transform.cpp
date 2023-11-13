@@ -8,7 +8,7 @@
 
 namespace Engine
 {
-    void Transform::update(float dt)
+    void Transform::update(float dt, bool hasRenderer)
     {
         if(m_isRigidBody)
         {
@@ -25,8 +25,11 @@ namespace Engine
             m_position.y += rigidBody.velocity.y * dt * .001f;
         }
 
-        ShaderProgram* shaderProgram = Engine::ShaderManager::getInstance()->getProgram(EngineShaderPrograms::Default);
-        shaderProgram->setUniform("a_pos", &m_position);
-        shaderProgram->setUniform("a_scale", &m_scale);
+        if(hasRenderer)
+        {
+            ShaderProgram* shaderProgram = Engine::ShaderManager::getInstance()->getProgram(EngineShaderPrograms::Default);
+            shaderProgram->setUniform("a_pos", &m_position);
+            shaderProgram->setUniform("a_scale", &m_scale);
+        }
     }
 } // Engine

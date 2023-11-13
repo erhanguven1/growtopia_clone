@@ -17,6 +17,7 @@ namespace Game
 
         auto ground = spawn<Engine::ImageObject>(1);
         ground->getTransform()->setPositionY(-.5f);
+        ground->getTransform()->setScaleX(2.0f);
         ground->getTransform()->setScaleY(.5f);
         ground->getTransform()->hasCollider = true;
 
@@ -28,9 +29,16 @@ namespace Game
 
         auto func = [&](const SyncVarTypeVariant& val, int connId)
         {
-            spawn<Player>(connId);
+            spawn<Player>(connId, true);
         };
         client->getCommandController()->commands["RPC_OnConnect"].emplace_back(func);
+
+        auto onFetchOtherPlayer = [&](const SyncVarTypeVariant& val, int connId)
+        {
+            auto secondId = (uint)std::get<int>(val);
+            spawn<Player>(secondId, false);
+        };
+        client->getCommandController()->commands["RPC_OnFetchOtherPlayer"].emplace_back(onFetchOtherPlayer);
 
         client->getSyncVarHandler()->registerSyncVar(onChangeSyncTest);
     }

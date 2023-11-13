@@ -23,7 +23,7 @@ namespace Engine
         template<class T = Gameobject, typename ... Args>
         T* spawn(Args&&... args)
         {
-            T* gameObject = new T(std::move(args...));
+            T* gameObject = new T(std::forward<Args>(args)...);
             newlyCreatedGameObjects.push_back(gameObject);
             return gameObject;
         }

@@ -13,8 +13,6 @@ void onReceivePacket(const ENetEvent& event);
 void registerRpcMethodsToCommands();
 void CMD_MoveTo(const SyncVarTypeVariant&, int);
 
-float xPos = 0;
-
 std::unordered_map<enet_uint32 , ENetPeer*> connections;
 std::vector<SyncVarTypeVariant> variables;
 
@@ -63,7 +61,7 @@ int main (int argc, char ** argv)
     std::chrono::steady_clock::time_point lastUpdate;
 
     ENetEvent event;
-    enet_host_service (server, &event, 10000);
+    //enet_host_service (server, &event, 10000);
     // gameloop
     while(true)
     {
@@ -74,6 +72,44 @@ int main (int argc, char ** argv)
                     printf("A new client connected from %x:%u.\n",
                            event.peer->address.host,
                            event.peer->address.port);
+
+                    for(auto conn : connections)
+                    {
+                        {
+                            //Let the newcomer know others
+                            MsgData msgData;
+                            msgData.type = (uint) (MessageTypes::ClientRPC);
+
+                            RemoteFunctionCallData rmData;
+                            rmData.m_parameterType = (uint) SyncVarTypes::INT;
+                            rmData.receiverId = event.peer->connectID;
+                            memcpy(rmData.m_parameter, &conn.second->connectID, sizeof(conn.second->connectID));
+                            memcpy(rmData.m_methodName, "RPC_OnFetchOtherPlayer", strlen("RPC_OnFetchOtherPlayer"));
+
+                            memcpy(msgData.data, &rmData, sizeof(rmData));
+
+                            auto packet = enet_packet_create(&msgData, sizeof(uint) + sizeof(RemoteFunctionCallData),
+                                                             NULL);
+                            enet_peer_send(event.peer, 0, packet);
+                        }
+
+                        {
+                            //Let others know the newcomer
+                            MsgData msgData2;
+                            msgData2.type = (uint)(MessageTypes::ClientRPC);
+
+                            RemoteFunctionCallData rmData2;
+                            rmData2.m_parameterType = (uint)SyncVarTypes::INT;
+                            rmData2.receiverId = conn.second->connectID;
+                            memcpy(rmData2.m_parameter, &event.peer->connectID, sizeof(event.peer->connectID));
+                            memcpy(rmData2.m_methodName, "RPC_FetchNewcomer", strlen("RPC_FetchNewcomer"));
+
+                            memcpy(msgData2.data, &rmData2, sizeof(rmData2));
+
+                            auto packet2 = enet_packet_create(&msgData2,sizeof(uint)+sizeof(RemoteFunctionCallData),NULL);
+                            enet_peer_send(conn.second, 0, packet2);
+                        }
+                    }
 
                     connections[event.peer->connectID] = event.peer;
                     printf("Connection ID: %u\n", event.peer->connectID);
@@ -174,11 +210,8 @@ void registerRpcMethodsToCommands()
 
 void CMD_MoveTo(const SyncVarTypeVariant& val, int connectId)
 {
-    glm::vec2 direction = std::get<glm::vec2>(val);
-    xPos += direction.x;
-    printf("\nPosition: %f\n", xPos);
-
-    glm::vec2 pos = glm::vec2(xPos,0);
+    glm::vec2 newPosCalculatedByOwner = std::get<glm::vec2>(val);
+    printf("\nPosition: %f:%f\n", newPosCalculatedByOwner.x, newPosCalculatedByOwner.y);
 
     MsgData msgData;
     msgData.type = (uint)(MessageTypes::ClientRPC);
@@ -186,12 +219,17 @@ void CMD_MoveTo(const SyncVarTypeVariant& val, int connectId)
     RemoteFunctionCallData rmData;
     rmData.m_parameterType = (uint)SyncVarTypes::VEC2;
     rmData.receiverId = connectId;
-    memcpy(rmData.m_parameter, &pos, sizeof(pos));
+    memcpy(rmData.m_parameter, &newPosCalculatedByOwner, sizeof(newPosCalculatedByOwner));
     memcpy(rmData.m_methodName, "RPC_UpdatePlayerPosition", strlen("RPC_UpdatePlayerPosition"));
 
     memcpy(msgData.data, &rmData, sizeof(rmData));
 
     auto packet = enet_packet_create(&msgData,sizeof(uint)+sizeof(RemoteFunctionCallData),NULL);
 
-    enet_host_broadcast(server, 0, packet);
+    for(auto conn : connections)
+    {
+        if(conn.second->connectID == connectId)
+            continue;
+        enet_peer_send(conn.second,0,packet);
+    }
 }

@@ -83,7 +83,7 @@ namespace Engine
                             upA > downB))
                     {
                         float overlapX = std::min(positionA.x + scaleA.x * .5f - positionB.x + scaleB.x *.5f, positionB.x + scaleB.x * .5f - positionA.x + scaleA.x * .5f);
-                        float overlapY = std::min(positionA.y + scaleA.y - positionB.y, positionB.y + scaleB.y - positionA.y);
+                        float overlapY = std::min(positionA.y + scaleA.y * .5f - positionB.y + scaleB.y *.5f, positionB.y + scaleB.y * .5f - positionA.y + scaleA.y * .5f);
 
                         if (overlapX < overlapY)
                         {

@@ -28,6 +28,20 @@ namespace Engine
         enet_address_set_host(&address, ip_address);
         address.port = port;
 
+        auto fetchNewcomer = [&](const SyncVarTypeVariant& val, int connId)
+        {
+            uint fetchedId = std::get<int>(val);
+            if(std::find(connections.begin(), connections.end(), fetchedId) == connections.end())
+            {
+                connections.push_back(fetchedId);
+                int fetchedInt = (int)fetchedId;
+                for(auto& cmd : commandController.commands["RPC_OnFetchOtherPlayer"])
+                    cmd(fetchedInt,connId);
+            }
+        };
+
+        commandController.commands["RPC_FetchNewcomer"].emplace_back(fetchNewcomer);
+
         server = enet_host_connect(client, &address, 1, 0);
         if (server == nullptr) {
             fprintf(stderr, "No available peers for initiating an ENet connection!\n");
@@ -39,7 +53,9 @@ namespace Engine
         {
             puts("Connection to 127.0.0.1:7777 succeeded.");
             connectionId = event.peer->connectID;
-            printf("Connection ID = %u",client->peers[0].connectID);
+            printf("Connection ID = %u",event.peer->connectID);
+
+            connections.push_back(connectionId);
 
             if(!commandController.commands["RPC_OnConnect"].empty())
             {
@@ -48,7 +64,9 @@ namespace Engine
                     cmd((int)connectionId,connectionId);
                 }
             }
-        } else {
+        }
+        else
+        {
             enet_peer_reset(server);
             puts("Connection to 127.0.0.1:7777 failed.");
             return EXIT_SUCCESS;
@@ -167,6 +185,13 @@ namespace Engine
                 int param;
                 memcpy(&param, rmCallData.m_parameter, sizeof(int));
                 printf("%d", param);
+                if(!commandController.commands[rmCallData.m_methodName].empty())
+                {
+                    for(auto& cmd : commandController.commands[rmCallData.m_methodName])
+                    {
+                        cmd(param,rmCallData.receiverId);
+                    }
+                }
                 break;
             }
             case SyncVarTypes::FLOAT:

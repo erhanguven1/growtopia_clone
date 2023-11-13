@@ -78,6 +78,8 @@ namespace Engine
         ENetPeer* server;
         ENetHost *client;
 
+        std::vector<uint> connections;
+
         uint connectionId;
 
         void onReceivePacket(const ENetEvent& event);

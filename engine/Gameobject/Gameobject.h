@@ -27,7 +27,7 @@ namespace Engine
 
         inline void tryRender(float dt)
         {
-            transform->update(dt);
+            transform->update(dt, renderer != nullptr);
 
             if(renderer)
                 renderer->render();

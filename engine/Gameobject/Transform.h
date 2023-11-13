@@ -34,7 +34,7 @@ namespace Engine
     class Transform
     {
     public:
-        void update(float dt);
+        void update(float dt, bool hasRenderer = false);
         inline void addToPosition(glm::vec2& delta)
         {
             m_position += delta;
