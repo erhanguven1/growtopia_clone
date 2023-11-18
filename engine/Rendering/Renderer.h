@@ -14,9 +14,10 @@ namespace Engine
     {
     public:
         Renderer();
+        Renderer(const char* imagePath);
         void render();
     private:
-        Mesh* mesh = nullptr;
+        std::unique_ptr<Mesh> mesh;
     };
 
 } // Engine

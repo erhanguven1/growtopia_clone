@@ -12,6 +12,7 @@
 void onReceivePacket(const ENetEvent& event);
 void registerRpcMethodsToCommands();
 void CMD_MoveTo(const SyncVarTypeVariant&, int);
+void CMD_LookAt(const SyncVarTypeVariant&, int);
 
 std::unordered_map<enet_uint32 , ENetPeer*> connections;
 std::vector<SyncVarTypeVariant> variables;
@@ -73,6 +74,14 @@ int main (int argc, char ** argv)
                            event.peer->address.host,
                            event.peer->address.port);
 
+                    uint * cidPtr = new uint;
+                    *cidPtr = event.peer->connectID;
+
+                    event.peer->data = cidPtr;
+
+                    uint cid = 1;
+                    memcpy(&cid, event.peer->data, sizeof(uint));
+
                     for(auto conn : connections)
                     {
                         {
@@ -117,6 +126,8 @@ int main (int argc, char ** argv)
                 }
                 case ENET_EVENT_TYPE_RECEIVE:
                 {
+                    uint cid = 0;
+                    memcpy(&cid, event.peer->data, sizeof(uint));
                     printf("A packet of length %u containing %s was received from %s on channel %u, rtt %u.\n",
                            event.packet->dataLength,
                            event.packet->data,
@@ -130,9 +141,16 @@ int main (int argc, char ** argv)
                     break;
                 }
                 case ENET_EVENT_TYPE_DISCONNECT:
-                    printf ("%s disconnected.\n", event.peer -> data);
+                {
+                    uint cid = 0;
+                    memcpy(&cid, event.peer->data, sizeof(uint));
+
+                    printf("%u disconnected.\n", cid);
+
+                    connections.erase(cid);
                     /* Reset the peer's client information. */
-                    event.peer -> data = nullptr;
+                    event.peer->data = nullptr;
+                }
                 case ENET_EVENT_TYPE_NONE:
                     break;
             }
@@ -206,6 +224,7 @@ void onReceivePacket(const ENetEvent& event)
 void registerRpcMethodsToCommands()
 {
     cmdController->commands["CMD_MoveTo"] = &CMD_MoveTo;
+    cmdController->commands["CMD_LookAt"] = &CMD_LookAt;
 }
 
 void CMD_MoveTo(const SyncVarTypeVariant& val, int connectId)
@@ -221,6 +240,31 @@ void CMD_MoveTo(const SyncVarTypeVariant& val, int connectId)
     rmData.receiverId = connectId;
     memcpy(rmData.m_parameter, &newPosCalculatedByOwner, sizeof(newPosCalculatedByOwner));
     memcpy(rmData.m_methodName, "RPC_UpdatePlayerPosition", strlen("RPC_UpdatePlayerPosition"));
+
+    memcpy(msgData.data, &rmData, sizeof(rmData));
+
+    auto packet = enet_packet_create(&msgData,sizeof(uint)+sizeof(RemoteFunctionCallData),NULL);
+
+    for(auto conn : connections)
+    {
+        if(conn.second->connectID == connectId)
+            continue;
+        enet_peer_send(conn.second,0,packet);
+    }
+}
+
+void CMD_LookAt(const SyncVarTypeVariant& val, int connectId)
+{
+    int newFacingDirection = std::get<int>(val);
+
+    MsgData msgData;
+    msgData.type = (uint)(MessageTypes::ClientRPC);
+
+    RemoteFunctionCallData rmData;
+    rmData.m_parameterType = (uint)SyncVarTypes::INT;
+    rmData.receiverId = connectId;
+    memcpy(rmData.m_parameter, &newFacingDirection, sizeof(newFacingDirection));
+    memcpy(rmData.m_methodName, "RPC_UpdatePlayerFacingDirection", strlen("RPC_UpdatePlayerFacingDirection"));
 
     memcpy(msgData.data, &rmData, sizeof(rmData));
 

@@ -17,12 +17,17 @@ namespace Engine
         CREATE_ABSTRACT_START_UPDATE;
 
         Gameobject() = delete;
-        Gameobject(uint layerIndex);
+        explicit Gameobject(uint layerIndex);
 
         inline void addRenderer()
         {
             assert(renderer == nullptr);
             renderer = std::make_unique<Engine::Renderer>();
+        }
+        inline void addRenderer(const char* imagePath)
+        {
+            assert(renderer == nullptr);
+            renderer = std::make_unique<Engine::Renderer>(imagePath);
         }
 
         inline void tryRender(float dt)
@@ -46,6 +51,12 @@ namespace Engine
         }
 
         inline uint getLayer() const { return layer; }
+        bool isDead = false;
+
+        virtual ~Gameobject()
+        {
+            printf("Called destructor!");
+        }
 
     private:
         std::unique_ptr<Engine::Renderer> renderer;

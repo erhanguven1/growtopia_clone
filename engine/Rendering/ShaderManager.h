@@ -32,6 +32,10 @@ namespace Engine
         {
             m_uniformHandles[name] = bgfx::createUniform(name,uniformType);
         }
+        bgfx::UniformHandle* getUniform(const char* name)
+        {
+            return &m_uniformHandles[name];
+        }
         ~ShaderProgram()
         {
             bgfx::destroy(m_programHandle);
@@ -76,6 +80,7 @@ namespace Engine
                         shaderProgram = new ShaderProgram(programHandle);
                         shaderProgram->addUniform("a_pos", bgfx::UniformType::Vec4);
                         shaderProgram->addUniform("a_scale", bgfx::UniformType::Vec4);
+                        shaderProgram->addUniform("s_tex", bgfx::UniformType::Sampler);
                         break;
                 }
 

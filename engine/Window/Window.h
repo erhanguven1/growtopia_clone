@@ -81,6 +81,7 @@ namespace Engine
         void setHeight(const int& h);
         void setSize(const int& w, const int& h);
         inline glm::vec2 getSize() const {return {width,height};}
+        inline static glm::vec2 windowSize = glm::vec2(800,600);
 
         float yOffset = 0;
     private:

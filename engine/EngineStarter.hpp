@@ -27,6 +27,19 @@ public:
             instance->keyEvent(key, action);
         });
 
+        glfwSetCursorPosCallback(glfwWindow, [](GLFWwindow* window, double xPos, double yPos)
+        {
+            Engine::InputHandler* instance = static_cast<Engine::InputHandler*>(glfwGetWindowUserPointer(window));
+            instance->cursorPosEvent(xPos, yPos);
+        });
+
+        glfwSetMouseButtonCallback(glfwWindow, [](GLFWwindow* window, int button, int action, int mods)
+        {
+            Engine::InputHandler* instance = static_cast<Engine::InputHandler*>(glfwGetWindowUserPointer(window));
+            instance->mouseButtonEvent(button, action, mods);
+        });
+
+
         glfwSetWindowUserPointer(glfwWindow, &inputHandler);
     }
 
@@ -62,6 +75,7 @@ public:
             if(glfwGetKey(glfwWindow, GLFW_KEY_1))
                 window->setSize(800,600);
         }
+        Engine::Client::getInstance()->disconnectRequested = true;
     }
 
     void exit()

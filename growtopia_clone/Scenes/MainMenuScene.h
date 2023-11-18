@@ -24,6 +24,7 @@ namespace Game
         void update(float) override;
     private:
         std::vector<Player*> players;
+        Engine::ImageObject* blocks[16][4];
         int syncTest;
         std::function<void(int)> onChangeSyncTest;
     };

@@ -84,6 +84,8 @@ namespace Engine
 
 
         bgfx::setViewRect(0,-width/2,y,width,height);
+        windowSize.x = width;
+        windowSize.y = height;
         //bgfx::setViewRect(0, 0, 120-height+600, static_cast<std::uint16_t>(width), static_cast<std::uint16_t>(height));
 
     }

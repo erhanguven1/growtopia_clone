@@ -34,6 +34,10 @@ set(SOURCE_FILES engine/EngineStarter.hpp
         engine/Input/InputHandler.h
         engine/Input/InputHandler.cpp
         engine/Physics/PhysicsConstants.h
+        growtopia_clone/World/World.cpp
+        growtopia_clone/World/World.h
+        growtopia_clone/World/Tile.cpp
+        growtopia_clone/World/Tile.h
 )
 
 set(NETWORKING_SOURCE_FILES
@@ -45,6 +49,7 @@ set(BGFX_BUILD_TOOLS ON CACHE INTERNAL "" FORCE)
 
 add_subdirectory("thirdparty/bgfx.cmake")
 include_directories("thirdparty/bgfx.cmake/bgfx/include")
+include_directories("thirdparty/others")
 include_directories("engine")
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}")

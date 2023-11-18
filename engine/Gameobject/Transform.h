@@ -6,6 +6,7 @@
 #define GROWTOPIA_CLONE_TRANSFORM_H
 
 #include <glm/glm.hpp>
+#include <cstdio>
 
 namespace Engine
 {
@@ -70,8 +71,10 @@ namespace Engine
         {
             return m_isRigidBody;
         }
-        inline RigidBody& getRigidBody(){return rigidBody;}
+        inline RigidBody* getRigidBody(){return &rigidBody;}
         bool hasCollider = false;
+        bool mirror = false;
+        float jumpExtraMultiplier = 1.0f;
     private:
         glm::vec2 m_position = glm::vec2(0.0f);
         glm::vec2 m_scale = glm::vec2(1.0f);

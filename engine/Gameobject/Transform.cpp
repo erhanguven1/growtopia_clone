@@ -5,6 +5,7 @@
 #include "Transform.h"
 #include "Rendering/ShaderManager.h"
 #include "Physics/PhysicsConstants.h"
+#include "Window/Window.h"
 
 namespace Engine
 {
@@ -12,24 +13,23 @@ namespace Engine
     {
         if(m_isRigidBody)
         {
-            const float gravity = Engine::Physics::PhysicsConstants::gravityScale;
-            printf("%f",rigidBody.velocity.y);
-            if(rigidBody.velocity.y > 0)
+            float gravity = Engine::Physics::PhysicsConstants::gravityScale;
+            if(rigidBody.velocity.y != 0)
             {
-                rigidBody.velocity.y -= gravity;
+                jumpExtraMultiplier *= 1.055f;
             }
-            else
-            {
-                rigidBody.velocity.y -= gravity * 5.0f;
-            }
+            rigidBody.velocity.y -= gravity * jumpExtraMultiplier;
             m_position.y += rigidBody.velocity.y * dt * .001f;
         }
 
         if(hasRenderer)
         {
             ShaderProgram* shaderProgram = Engine::ShaderManager::getInstance()->getProgram(EngineShaderPrograms::Default);
+            auto m_sc = m_scale;
+            m_sc.x *= (!mirror ? 1.0f : -1.0f) * 100.0f / Engine::Window::windowSize.x;
+            m_sc.y *= 100.0f / Engine::Window::windowSize.y;
             shaderProgram->setUniform("a_pos", &m_position);
-            shaderProgram->setUniform("a_scale", &m_scale);
+            shaderProgram->setUniform("a_scale", &m_sc);
         }
     }
 } // Engine

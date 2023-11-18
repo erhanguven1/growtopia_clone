@@ -10,21 +10,25 @@ namespace Engine
 {
     Renderer::Renderer()
     {
-        mesh = new Mesh();
+        mesh = std::make_unique<Mesh>();
         mesh->init();
+    }
+    Renderer::Renderer(const char *imagePath)
+    {
+        mesh = std::make_unique<Mesh>();
+        mesh->init(imagePath);
     }
     void Renderer::render()
     {
-        if(mesh == nullptr)
-            throw std::runtime_error("Mesh is NULL!");
+        assert(mesh != nullptr);
 
-        bgfx::setState(
-                BGFX_STATE_WRITE_R
-                | BGFX_STATE_WRITE_G
-                | BGFX_STATE_WRITE_B
-                | BGFX_STATE_WRITE_A
-        );
         mesh->bindVertexAndIndexBuffer();
+        bgfx::setState
+        (0
+        | BGFX_STATE_WRITE_RGB
+        | BGFX_STATE_WRITE_A
+        | BGFX_STATE_BLEND_ALPHA
+        );
         bgfx::submit(0, Engine::ShaderManager::getInstance()->getProgram(Engine::EngineShaderPrograms::Default)->getProgramHandle());
     }
 } // Engine

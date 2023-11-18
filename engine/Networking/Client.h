@@ -70,6 +70,8 @@ namespace Engine
         void callRPC(RemoteFunctionCallData& rmCallData);
         std::vector<RemoteFunctionCallData*> queuedCalls;
 
+        bool disconnectRequested;
+
     private:
         Client(){}
         inline static Client* instance = nullptr;

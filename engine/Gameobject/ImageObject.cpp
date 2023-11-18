@@ -8,7 +8,10 @@ namespace Engine
 {
     ImageObject::ImageObject(const char *imagePath, const uint layerIndex)  : Gameobject(layerIndex)
     {
-        addRenderer();
+        if(imagePath == "")
+            addRenderer();
+        else
+            addRenderer(imagePath);
     }
 
     void ImageObject::start()

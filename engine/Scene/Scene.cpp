@@ -4,6 +4,7 @@
 
 #include "Scene.h"
 #include "Networking/Client.h"
+#include "Window/Window.h"
 
 namespace Engine
 {
@@ -21,7 +22,7 @@ namespace Engine
 
     void Scene::update(float dt)
     {
-        Client::getInstance()->callRPCs();
+        //Client::getInstance()->callRPCs();
 
         if(!newlyCreatedGameObjects.empty())
         {
@@ -34,16 +35,25 @@ namespace Engine
             newlyCreatedGameObjects.clear();
         }
 
-        for (const auto& pair : gameObjects)
+        for (auto& pair : gameObjects)
         {
+            int i = 0;
             for(auto* gameObject : pair.second)
             {
+                printf("objects: %zu\n",pair.second.size());
+                if(gameObject->isDead)
+                {
+                    pair.second.erase(pair.second.begin() + i);
+                    delete gameObject;
+                    continue;
+                }
                 gameObject->update(dt);
                 if(gameObject->getTransform()->getIsRigidBody())
                 {
                     checkCollisionsWithGameObject(*gameObject);
                 }
                 gameObject->tryRender(dt);
+                i++;
             }
         }
     }
@@ -62,8 +72,13 @@ namespace Engine
                     auto& positionA = transformA->getPosition();
                     auto& positionB = transformB->getPosition();
 
-                    auto& scaleA = transformA->getScale();
-                    auto& scaleB = transformB->getScale();
+                    auto scaleA = transformA->getScale();
+                    scaleA.x *= 100.0f / Engine::Window::windowSize.x;
+                    scaleA.y *= 100.0f / Engine::Window::windowSize.y;
+
+                    auto scaleB = transformB->getScale();
+                    scaleB.x *= 100.0f / Engine::Window::windowSize.x;
+                    scaleB.y *= 100.0f / Engine::Window::windowSize.y;
 
                     float leftA = positionA.x - scaleA.x * .5f;
                     float rightA = positionA.x + scaleA.x * .5f;
@@ -103,17 +118,17 @@ namespace Engine
                             if (positionA.y + scaleA.y / 2 < positionB.y + scaleB.y / 2)
                             {
                                 positionA.y -= overlapY;
-                                if(transformA->getIsRigidBody() && transformA->getRigidBody().velocity.y < 0)
+                                if(transformA->getIsRigidBody() && transformA->getRigidBody()->velocity.y < 0)
                                 {
-                                    transformA->getRigidBody().velocity.y = 0;
+                                    transformA->getRigidBody()->velocity.y = 0;
                                 }
                             } else
                             {
                                 // Player is below the obstacle
                                 positionA.y += overlapY;
-                                if(transformA->getIsRigidBody() && transformA->getRigidBody().velocity.y < 0)
+                                if(transformA->getIsRigidBody() && transformA->getRigidBody()->velocity.y < 0)
                                 {
-                                    transformA->getRigidBody().velocity.y = 0;
+                                    transformA->getRigidBody()->velocity.y = 0;
                                 }
                             }
                         }

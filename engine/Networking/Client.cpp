@@ -77,14 +77,17 @@ namespace Engine
     {
         ENetEvent event;
 
-        while (enet_host_service(client, &event, 5000) > 0)
+        while (!disconnectRequested)
         {
-            switch (event.type)
+            while (enet_host_service(client, &event, 30) > 0)
             {
-                case ENET_EVENT_TYPE_RECEIVE:
-                    onReceivePacket(event);
-                    enet_packet_destroy(event.packet);
-                    break;
+                switch (event.type)
+                {
+                    case ENET_EVENT_TYPE_RECEIVE:
+                        onReceivePacket(event);
+                        enet_packet_destroy(event.packet);
+                        break;
+                }
             }
         }
     }
@@ -143,6 +146,8 @@ namespace Engine
 
                 queuedCalls.push_back(rmCallData);
                 printf("\nreceived rpc!\n");
+
+                callRPCs();
 
                 break;
         }
