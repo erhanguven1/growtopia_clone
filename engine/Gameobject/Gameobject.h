@@ -53,10 +53,7 @@ namespace Engine
         inline uint getLayer() const { return layer; }
         bool isDead = false;
 
-        virtual ~Gameobject()
-        {
-            printf("Called destructor!");
-        }
+
 
     private:
         std::unique_ptr<Engine::Renderer> renderer;

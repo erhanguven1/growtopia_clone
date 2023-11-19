@@ -13,7 +13,7 @@ namespace Engine
     {
         for (const auto& pair : gameObjects)
         {
-            for(auto* gameObject : pair.second)
+            for(const auto& gameObject : pair.second)
             {
                 gameObject->start();
             }
@@ -38,13 +38,16 @@ namespace Engine
         for (auto& pair : gameObjects)
         {
             int i = 0;
-            for(auto* gameObject : pair.second)
+            for(auto gameObject : pair.second)
             {
-                printf("objects: %zu\n",pair.second.size());
-                if(gameObject->isDead)
+                if(gameObject == nullptr)
+                {
+                    continue;
+                }
+                if(gameObject != nullptr && gameObject->isDead)
                 {
                     pair.second.erase(pair.second.begin() + i);
-                    delete gameObject;
+                    gameObject = nullptr;
                     continue;
                 }
                 gameObject->update(dt);
@@ -62,7 +65,7 @@ namespace Engine
     {
         for (const auto& pair : gameObjects)
         {
-            for(auto* go : pair.second)
+            for(auto& go : pair.second)
             {
                 if(go != &gameObject && go->getTransform()->hasCollider)
                 {

@@ -7,6 +7,7 @@
 
 #include "Mesh.h"
 #include <iostream>
+#include <glm/vec4.hpp>
 
 namespace Engine
 {
@@ -16,8 +17,14 @@ namespace Engine
         Renderer();
         Renderer(const char* imagePath);
         void render();
+        inline void setColor(glm::vec4& color)
+        {
+            m_Color = color;
+        }
+        void setTexture(const char* imagePath);
     private:
         std::unique_ptr<Mesh> mesh;
+        glm::vec4 m_Color = {1.0f,1.0f,1.0f,1.0f};
     };
 
 } // Engine

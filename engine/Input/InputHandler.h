@@ -44,6 +44,12 @@ namespace Engine
             return ret;
         }
 
+        inline static bool isPressingMouseButton(int mousecode)
+        {
+            bool ret = mouseStates[mousecode] == GLFW_PRESS || mouseStates[mousecode] == GLFW_REPEAT;
+            return ret;
+        }
+
     private:
         inline static double last_xPos = 0;
         inline static double last_yPos = 0;

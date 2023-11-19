@@ -6,11 +6,12 @@ $input v_color0, v_texcoord0
  */
 
 uniform sampler2D s_tex;
+uniform vec4 a_color;
 
 #include <bgfx_shader.sh>
 
 void main()
 {
     vec4 texColor = texture2D(s_tex, v_texcoord0);
-	gl_FragColor = v_color0 * texColor;
+	gl_FragColor = v_color0 * a_color * texColor;
 }

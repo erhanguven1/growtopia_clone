@@ -23,12 +23,10 @@ namespace Game
 
         for(float x = 0; x < 2.0f; x+=.125f)
         {
-            for (float y = 0; y < .165f*4; y+=.165f)
+            for (float y = 0, h = 0; y < .165f*4; y+=.165f, h += 1.0f)
             {
-                auto ground = spawn<Engine::ImageObject>("/Users/erhanguven/CLionProjects/growtopia_clone/growtopia_clone/Resources/dirt_mid.png",1);
-                ground->getTransform()->setPositionX(x-.9375f);
-                ground->getTransform()->setPositionY(y-1.0f+.165f/2.0f);
-                ground->getTransform()->hasCollider = true;
+                glm::ivec2 pos = {x*8,h};
+                auto ground = new Tile(BlockType::Dirt, pos);
                 blocks[(int)(x*8)][(int)(y/.165f)]=ground;
             }
         }
@@ -46,6 +44,13 @@ namespace Game
         };
         client->getCommandController()->commands["RPC_OnFetchOtherPlayer"].emplace_back(onFetchOtherPlayer);
 
+        auto onBlockDestroyed = [&](const SyncVarTypeVariant& val, int connId)
+        {
+            auto blockIndex = (glm::ivec2)std::get<glm::vec2>(val);
+            blocks[blockIndex.x][blockIndex.y]->setBlockType(BlockType::Empty);
+        };
+        client->getCommandController()->commands["RPC_OnBlockDestroyed"].emplace_back(onBlockDestroyed);
+
         client->getSyncVarHandler()->registerSyncVar(onChangeSyncTest);
     }
 
@@ -53,17 +58,20 @@ namespace Game
     {
         Scene::update(dt);
         int mouseX =(int)Engine::InputHandler::mousePosition.x;
-        float mouseY = (Engine::InputHandler::mousePosition.y - .25f*0);
+        float mouseY = (Engine::InputHandler::mousePosition.y);
         int block_i = mouseX/50;
         int block_j = (int)(-mouseY/50.0f + 12);
 
         bool blockExists = block_i >= 0 && block_i <= 15 && block_j >= 0 && block_j <= 3;
 
-        if(blockExists && blocks[block_i][block_j] != nullptr && Engine::InputHandler::onPressMouseButton(GLFW_MOUSE_BUTTON_LEFT))
+        if(blockExists && blocks[block_i][block_j] != nullptr && Engine::InputHandler::isPressingMouseButton(GLFW_MOUSE_BUTTON_LEFT))
         {
-            blocks[block_i][block_j]->isDead = true;
-            blocks[block_i][block_j] = nullptr;
-            printf("Deleting: %d,%d\n",block_i,block_j);
+            glm::vec2& playerPos =Player::myPlayer->getCharacterPosition();
+            glm::vec2& blockPos =blocks[block_i][block_j]->getBlockPosition();
+            if(glm::distance(playerPos,blockPos) < .333f)
+            {
+                blocks[block_i][block_j]->takeDamage(dt * 100);
+            }
         }
 
     }

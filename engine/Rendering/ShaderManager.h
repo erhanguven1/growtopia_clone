@@ -81,6 +81,7 @@ namespace Engine
                         shaderProgram->addUniform("a_pos", bgfx::UniformType::Vec4);
                         shaderProgram->addUniform("a_scale", bgfx::UniformType::Vec4);
                         shaderProgram->addUniform("s_tex", bgfx::UniformType::Sampler);
+                        shaderProgram->addUniform("a_color", bgfx::UniformType::Vec4);
                         break;
                 }
 

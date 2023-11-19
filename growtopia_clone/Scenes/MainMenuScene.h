@@ -9,6 +9,7 @@
 #include "Gameobject/ImageObject.h"
 #include "Networking/Client.h"
 #include "../Player/Player.h"
+#include "../World/Tile.h"
 
 namespace Game
 {
@@ -24,7 +25,7 @@ namespace Game
         void update(float) override;
     private:
         std::vector<Player*> players;
-        Engine::ImageObject* blocks[16][4];
+        Tile* blocks[16][4];
         int syncTest;
         std::function<void(int)> onChangeSyncTest;
     };

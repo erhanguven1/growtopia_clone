@@ -22,6 +22,8 @@ namespace Engine
     {
         assert(mesh != nullptr);
 
+        ShaderProgram* shaderProgram = Engine::ShaderManager::getInstance()->getProgram(EngineShaderPrograms::Default);
+        shaderProgram->setUniform("a_color", &m_Color);
         mesh->bindVertexAndIndexBuffer();
         bgfx::setState
         (0
@@ -30,5 +32,10 @@ namespace Engine
         | BGFX_STATE_BLEND_ALPHA
         );
         bgfx::submit(0, Engine::ShaderManager::getInstance()->getProgram(Engine::EngineShaderPrograms::Default)->getProgramHandle());
+    }
+
+    void Renderer::setTexture(const char* imagePath)
+    {
+        mesh->setTexture(imagePath);
     }
 } // Engine

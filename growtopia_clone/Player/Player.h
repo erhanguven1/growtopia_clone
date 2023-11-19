@@ -16,8 +16,12 @@ namespace Game
         inline static Player* myPlayer = nullptr;
         void start() override{}
         void update(float) override;
+        inline glm::vec2& getCharacterPosition()
+        {
+            return character->getTransform()->getPosition();
+        }
     private:
-        Engine::ImageObject* character = nullptr;
+        Engine::ImageObject* character;
         uint connectionId;
         void RPC_UpdatePlayerPosition(const std::variant<int, float, glm::vec2> &val, int connId) const;
         void RPC_UpdatePlayerFacingDirection(const std::variant<int, float, glm::vec2> &val, int connId) const;

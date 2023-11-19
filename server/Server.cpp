@@ -13,6 +13,7 @@ void onReceivePacket(const ENetEvent& event);
 void registerRpcMethodsToCommands();
 void CMD_MoveTo(const SyncVarTypeVariant&, int);
 void CMD_LookAt(const SyncVarTypeVariant&, int);
+void CMD_DestroyBlock(const SyncVarTypeVariant&, int);
 
 std::unordered_map<enet_uint32 , ENetPeer*> connections;
 std::vector<SyncVarTypeVariant> variables;
@@ -225,6 +226,7 @@ void registerRpcMethodsToCommands()
 {
     cmdController->commands["CMD_MoveTo"] = &CMD_MoveTo;
     cmdController->commands["CMD_LookAt"] = &CMD_LookAt;
+    cmdController->commands["CMD_DestroyBlock"] = &CMD_DestroyBlock;
 }
 
 void CMD_MoveTo(const SyncVarTypeVariant& val, int connectId)
@@ -265,6 +267,31 @@ void CMD_LookAt(const SyncVarTypeVariant& val, int connectId)
     rmData.receiverId = connectId;
     memcpy(rmData.m_parameter, &newFacingDirection, sizeof(newFacingDirection));
     memcpy(rmData.m_methodName, "RPC_UpdatePlayerFacingDirection", strlen("RPC_UpdatePlayerFacingDirection"));
+
+    memcpy(msgData.data, &rmData, sizeof(rmData));
+
+    auto packet = enet_packet_create(&msgData,sizeof(uint)+sizeof(RemoteFunctionCallData),NULL);
+
+    for(auto conn : connections)
+    {
+        if(conn.second->connectID == connectId)
+            continue;
+        enet_peer_send(conn.second,0,packet);
+    }
+}
+
+void CMD_DestroyBlock(const SyncVarTypeVariant& val, int connectId)
+{
+    glm::vec2 destroyedBlock = std::get<glm::vec2>(val);
+
+    MsgData msgData;
+    msgData.type = (uint)(MessageTypes::ClientRPC);
+
+    RemoteFunctionCallData rmData;
+    rmData.m_parameterType = (uint)SyncVarTypes::VEC2;
+    rmData.receiverId = connectId;
+    memcpy(rmData.m_parameter, &destroyedBlock, sizeof(destroyedBlock));
+    memcpy(rmData.m_methodName, "RPC_OnBlockDestroyed", strlen("RPC_OnBlockDestroyed"));
 
     memcpy(msgData.data, &rmData, sizeof(rmData));
 

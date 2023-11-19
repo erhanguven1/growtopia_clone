@@ -6,6 +6,7 @@
 #define GROWTOPIA_CLONE_TILE_H
 
 #include <glm/vec2.hpp>
+#include <Gameobject/ImageObject.h>
 
 namespace Game
 {
@@ -21,13 +22,26 @@ namespace Game
     public:
         Tile(const Tile&) = delete;
         Tile() = delete;
-        explicit Tile(BlockType blockType, glm::vec2& position);
-        explicit Tile(glm::vec2& position);
+        explicit Tile(BlockType blockType, glm::ivec2& position);
+        explicit Tile(glm::ivec2& position);
 
         void setBlockType(BlockType blockType);
+
+        void takeDamage(float dmg);
+        inline glm::vec2& getBlockPosition()
+        {
+            if(blockImage)
+            {
+                return blockImage->getTransform()->getPosition();
+            }
+        }
     private:
-        glm::vec2 m_Position;
+        glm::ivec2 m_Position;
         BlockType m_BlockType;
+        float m_Health = 100.0f;
+
+        Engine::ImageObject* blockImage;
+        void setBlockImage();
     };
 
 } // Game

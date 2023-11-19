@@ -6,6 +6,7 @@
 #define GROWTOPIA_CLONE_MESH_H
 
 #include <bgfx/bgfx.h>
+#include <stb_image.h>
 
 namespace Engine
 {
@@ -23,6 +24,7 @@ namespace Engine
         void init();
         void init(const char* imagePath);
         void bindVertexAndIndexBuffer();
+        void setTexture(const char* path);
 
     private:
         bgfx::VertexLayout vertexLayout;
@@ -42,6 +44,7 @@ namespace Engine
                         0, 1, 2,
                         0, 2, 3,
                 };
+        stbi_uc* data;
     };
 
 } // Engine
