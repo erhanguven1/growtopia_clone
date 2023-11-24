@@ -1,4 +1,5 @@
 #include "bgfx/bgfx.h"
+#include "bx/math.h"
 #include <GLFW/glfw3.h>
 #define GLFW_EXPOSE_NATIVE_COCOA
 #include "Gameobject/ImageObject.h"
@@ -62,7 +63,15 @@ public:
             }
             lastUpdate = now;
 
-            bgfx::setViewClear(0, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH, 0x3c3c3cff, 0.0f, 0);
+            bgfx::setViewClear(0, BGFX_CLEAR_COLOR, 0x3c3c3cff, 0.0f, 0);
+
+            float proj[16];
+            float& zoom = window->zoomLevel;
+            float right = 800.0f * zoom;
+            float top = 600.0f * zoom;
+
+            bx::mtxOrtho(proj, 0, right, 0.0f,top, 0.0f, 1000.0f,0.0f, bgfx::getCaps()->homogeneousDepth);
+            bgfx::setViewTransform(0, nullptr, proj);
 
             if(deltaTime < 100.0f)
                 Engine::SceneManager::getCurrentScene()->update(deltaTime);

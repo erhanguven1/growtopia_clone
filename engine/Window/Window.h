@@ -83,7 +83,11 @@ namespace Engine
         inline glm::vec2 getSize() const {return {width,height};}
         inline static glm::vec2 windowSize = glm::vec2(800,600);
 
+        void zoom(float zoomAdd);
+
         float yOffset = 0;
+        float zoomLevel = 1.0f;
+
     private:
         inline static Window* instance;
         GLFWwindow* glfwWindow = nullptr;

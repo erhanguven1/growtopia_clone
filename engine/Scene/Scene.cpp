@@ -22,8 +22,6 @@ namespace Engine
 
     void Scene::update(float dt)
     {
-        //Client::getInstance()->callRPCs();
-
         if(!newlyCreatedGameObjects.empty())
         {
             for(const auto& gameObject : newlyCreatedGameObjects)
@@ -44,7 +42,7 @@ namespace Engine
                 {
                     continue;
                 }
-                if(gameObject != nullptr && gameObject->isDead)
+                if(gameObject->isDead)
                 {
                     pair.second.erase(pair.second.begin() + i);
                     gameObject = nullptr;

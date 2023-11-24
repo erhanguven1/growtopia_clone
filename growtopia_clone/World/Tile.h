@@ -25,7 +25,7 @@ namespace Game
         explicit Tile(BlockType blockType, glm::ivec2& position);
         explicit Tile(glm::ivec2& position);
 
-        void setBlockType(BlockType blockType);
+        void setBlockType(BlockType blockType, bool fromRpc = false);
 
         void takeDamage(float dmg);
         inline glm::vec2& getBlockPosition()
@@ -34,6 +34,10 @@ namespace Game
             {
                 return blockImage->getTransform()->getPosition();
             }
+        }
+        inline BlockType getBlockType()
+        {
+            return m_BlockType;
         }
     private:
         glm::ivec2 m_Position;

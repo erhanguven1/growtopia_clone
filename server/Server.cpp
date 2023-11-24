@@ -92,6 +92,7 @@ int main (int argc, char ** argv)
 
                             RemoteFunctionCallData rmData;
                             rmData.m_parameterType = (uint) SyncVarTypes::INT;
+                            rmData.parameterSize = sizeof(int);
                             rmData.receiverId = event.peer->connectID;
                             memcpy(rmData.m_parameter, &conn.second->connectID, sizeof(conn.second->connectID));
                             memcpy(rmData.m_methodName, "RPC_OnFetchOtherPlayer", strlen("RPC_OnFetchOtherPlayer"));
@@ -111,6 +112,7 @@ int main (int argc, char ** argv)
                             RemoteFunctionCallData rmData2;
                             rmData2.m_parameterType = (uint)SyncVarTypes::INT;
                             rmData2.receiverId = conn.second->connectID;
+                            rmData2.parameterSize = sizeof(int);
                             memcpy(rmData2.m_parameter, &event.peer->connectID, sizeof(event.peer->connectID));
                             memcpy(rmData2.m_methodName, "RPC_FetchNewcomer", strlen("RPC_FetchNewcomer"));
 
@@ -239,6 +241,7 @@ void CMD_MoveTo(const SyncVarTypeVariant& val, int connectId)
 
     RemoteFunctionCallData rmData;
     rmData.m_parameterType = (uint)SyncVarTypes::VEC2;
+    rmData.parameterSize = sizeof(glm::vec2);
     rmData.receiverId = connectId;
     memcpy(rmData.m_parameter, &newPosCalculatedByOwner, sizeof(newPosCalculatedByOwner));
     memcpy(rmData.m_methodName, "RPC_UpdatePlayerPosition", strlen("RPC_UpdatePlayerPosition"));
@@ -264,6 +267,7 @@ void CMD_LookAt(const SyncVarTypeVariant& val, int connectId)
 
     RemoteFunctionCallData rmData;
     rmData.m_parameterType = (uint)SyncVarTypes::INT;
+    rmData.parameterSize = sizeof(int);
     rmData.receiverId = connectId;
     memcpy(rmData.m_parameter, &newFacingDirection, sizeof(newFacingDirection));
     memcpy(rmData.m_methodName, "RPC_UpdatePlayerFacingDirection", strlen("RPC_UpdatePlayerFacingDirection"));
@@ -289,6 +293,7 @@ void CMD_DestroyBlock(const SyncVarTypeVariant& val, int connectId)
 
     RemoteFunctionCallData rmData;
     rmData.m_parameterType = (uint)SyncVarTypes::VEC2;
+    rmData.parameterSize = sizeof(glm::vec2);
     rmData.receiverId = connectId;
     memcpy(rmData.m_parameter, &destroyedBlock, sizeof(destroyedBlock));
     memcpy(rmData.m_methodName, "RPC_OnBlockDestroyed", strlen("RPC_OnBlockDestroyed"));

@@ -3,6 +3,7 @@
 //
 
 #include "Window.h"
+#include "bx/math.h"
 #include <iostream>
 
 namespace Engine
@@ -78,7 +79,7 @@ namespace Engine
 
         printf("X = %d, Y = %d\n", xPos, yPos);
 
-        float y = 320 - (height - 400);
+        float y = 320.0f - (height - 400.0f);
 
         printf("H = %f\n", y);
 
@@ -86,7 +87,11 @@ namespace Engine
         bgfx::setViewRect(0,-width/2,y,width,height);
         windowSize.x = width;
         windowSize.y = height;
-        //bgfx::setViewRect(0, 0, 120-height+600, static_cast<std::uint16_t>(width), static_cast<std::uint16_t>(height));
 
+    }
+
+    void Window::zoom(float zoomAdd)
+    {
+        zoomLevel += zoomAdd;
     }
 } // Engine

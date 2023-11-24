@@ -17,21 +17,28 @@ namespace Game
     }
     Tile::Tile(glm::ivec2 &position) : Tile(BlockType::Empty, position) {}
 
-    void Tile::setBlockType(BlockType blockType)
+    void Tile::setBlockType(BlockType blockType, bool fromRpc)
     {
         m_BlockType = blockType;
+        if(!fromRpc)
+        {
+            glm::vec2 blockIndex = {m_Position.x, m_Position.y};
+            Engine::Client::getInstance()->callCommand("CMD_DestroyBlock", blockIndex);
+        }
+
         if(blockType == BlockType::Empty)
         {
             if(blockImage)
             {
-                glm::vec2 blockIndex = {m_Position.x, m_Position.y};
-                Engine::Client::getInstance()->callCommand("CMD_DestroyBlock", blockIndex);
                 blockImage->isDead = true;
                 m_Health = 100;
             }
         }
         else
         {
+            if(blockType == BlockType::CaveBackground)
+                blockImage->getTransform()->hasCollider = false;
+
             setBlockImage();
         }
     }
@@ -41,8 +48,10 @@ namespace Game
         if(blockImage == nullptr)
         {
             blockImage = Engine::SceneManager::getCurrentScene()->spawn<Engine::ImageObject>("/Users/erhanguven/CLionProjects/growtopia_clone/growtopia_clone/Resources/dirt_mid.png",1);
-            blockImage->getTransform()->setPositionX(m_Position.x/8.0f-.9375f);
-            blockImage->getTransform()->setPositionY(m_Position.y/6.06f-1.0f+.165f/2.0f);
+            blockImage->getTransform()->setPositionX(m_Position.x);
+            blockImage->getTransform()->setPositionY(m_Position.y);
+            blockImage->getTransform()->setScaleX(50);
+            blockImage->getTransform()->setScaleY(50);
             blockImage->getTransform()->hasCollider = true;
         }
         else
@@ -70,7 +79,6 @@ namespace Game
                 c = glm::vec4(1.0f);
                 blockImage->getRenderer()->setColor(c);
                 m_Health = 100;
-                blockImage->getTransform()->hasCollider = false;
             }
         }
     }

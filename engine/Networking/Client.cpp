@@ -9,7 +9,8 @@ namespace Engine
 {
     int Client::connectTo(const char *ip_address, const int &port)
     {
-        if (enet_initialize() != 0) {
+        if (enet_initialize() != 0)
+        {
             fprintf(stderr, "An error occurred while initializing ENet!\n");
             return EXIT_FAILURE;
         }
@@ -17,7 +18,8 @@ namespace Engine
 
         client = enet_host_create(nullptr, 1, 1, 0, 0);
 
-        if (client == nullptr) {
+        if (client == nullptr)
+        {
             fprintf(stderr, "An error occurred while trying to create an ENet client host!\n");
             return EXIT_FAILURE;
         }
@@ -43,7 +45,8 @@ namespace Engine
         commandController.commands["RPC_FetchNewcomer"].emplace_back(fetchNewcomer);
 
         server = enet_host_connect(client, &address, 1, 0);
-        if (server == nullptr) {
+        if (server == nullptr)
+        {
             fprintf(stderr, "No available peers for initiating an ENet connection!\n");
             return EXIT_FAILURE;
         }
@@ -79,7 +82,7 @@ namespace Engine
 
         while (!disconnectRequested)
         {
-            while (enet_host_service(client, &event, 1000) > 0)
+            while (enet_host_service(client, &event, 100) > 0)
             {
                 switch (event.type)
                 {

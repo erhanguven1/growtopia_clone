@@ -12,7 +12,7 @@ namespace Game
     Player::Player(uint connId, bool isMine) : Gameobject(99), connectionId(connId), m_isMine(isMine)
     {
         character = Engine::SceneManager::getCurrentScene()->spawn<Engine::ImageObject>("/Users/erhanguven/CLionProjects/growtopia_clone/growtopia_clone/Resources/base_skin.png",1);
-        glm::vec2 scale = glm::vec2(0.68f,1.0f);
+        glm::vec2 scale = glm::vec2(34.0f,50.0f);
         character->getTransform()->setScale(scale);
         character->getTransform()->setIsRigidBody(m_isMine);
         character->getTransform()->setPositionY(.25f);

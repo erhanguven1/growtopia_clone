@@ -35,6 +35,7 @@ namespace Engine
     class Transform
     {
     public:
+        bool debugBreak;
         void update(float dt, bool hasRenderer = false);
         inline void addToPosition(glm::vec2& delta)
         {
@@ -75,9 +76,10 @@ namespace Engine
         bool hasCollider = false;
         bool mirror = false;
         float jumpExtraMultiplier = 1.0f;
+        float depth = 0.0f;
     private:
         glm::vec2 m_position = glm::vec2(0.0f);
-        glm::vec2 m_scale = glm::vec2(1.0f);
+        glm::vec2 m_scale = glm::vec2(100.0f);
         float m_rotation = 0.0f;
         bool m_isRigidBody = false;
         RigidBody rigidBody;

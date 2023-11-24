@@ -4,6 +4,7 @@
 
 #include "MainMenuScene.h"
 #include "Input/InputHandler.h"
+#include "Window/Window.h"
 
 namespace Game
 {
@@ -11,23 +12,24 @@ namespace Game
     {
         Scene::start();
         auto client = Engine::Client::getInstance();
-        onChangeSyncTest = [&](int newVal)
-        {
-            syncTest = newVal;
-        };
 
         auto bg = spawn<Engine::ImageObject>("/Users/erhanguven/CLionProjects/growtopia_clone/growtopia_clone/Resources/backgrounds/bg-0.png",0);
-        bg->getTransform()->setScaleX(16.0f);
-        bg->getTransform()->setScaleY(8.42f);
-        bg->getTransform()->setPositionY(.3f);
+        bg->getTransform()->setScaleX(800.0f);
+        bg->getTransform()->setScaleY(600.0f);
+        bg->getTransform()->setPositionY(1.0f/3.0f);
+        bg->getTransform()->debugBreak = true;
 
-        for(float x = 0; x < 2.0f; x+=.125f)
+        for(float x = -400.0f; x < 400.0f; x += 50.0f)
         {
-            for (float y = 0, h = 0; y < .165f*4; y+=.165f, h += 1.0f)
+            for (float y = -300.0f; y < -100.0f; y += 50.0f)
             {
-                glm::ivec2 pos = {x*8,h};
+                glm::ivec2 pos = {x+25.0f,y+25.0f};
                 auto ground = new Tile(BlockType::Dirt, pos);
-                blocks[(int)(x*8)][(int)(y/.165f)]=ground;
+
+                int i = int((x+400)/25);
+                int j = int((y+300)/50);
+
+                blocks[i][j]=ground;
             }
         }
 
@@ -46,12 +48,16 @@ namespace Game
 
         auto onBlockDestroyed = [&](const SyncVarTypeVariant& val, int connId)
         {
+            if(connId == Engine::Client::getInstance()->getConnectionId())
+                return;
+
             auto blockIndex = (glm::ivec2)std::get<glm::vec2>(val);
-            blocks[blockIndex.x][blockIndex.y]->setBlockType(BlockType::Empty);
+            if(blocks[blockIndex.x][blockIndex.y]->getBlockType() == BlockType::Dirt)
+                blocks[blockIndex.x][blockIndex.y]->setBlockType(BlockType::CaveBackground, true);
+            else
+                blocks[blockIndex.x][blockIndex.y]->setBlockType(BlockType::Empty, true);
         };
         client->getCommandController()->commands["RPC_OnBlockDestroyed"].emplace_back(onBlockDestroyed);
-
-        client->getSyncVarHandler()->registerSyncVar(onChangeSyncTest);
     }
 
     void MainMenuScene::update(float dt)
@@ -74,5 +80,13 @@ namespace Game
             }
         }
 
+        if(Engine::InputHandler::isPressingKey(GLFW_KEY_Z))
+        {
+            Engine::Window::getInstance()->zoom(.1f);
+        }
+        if(Engine::InputHandler::isPressingKey(GLFW_KEY_X))
+        {
+            Engine::Window::getInstance()->zoom(-.1f);
+        }
     }
 } // Game

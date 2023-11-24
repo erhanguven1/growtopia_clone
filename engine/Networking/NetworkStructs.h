@@ -53,5 +53,6 @@ struct RemoteFunctionCallData
     char m_methodName[32] = "";
     uint receiverId = -1;
     uint m_parameterType;
+    uint parameterSize;
     enet_uint8 m_parameter[64] = {0};
 };
