@@ -8,21 +8,21 @@
 
 namespace Game
 {
-    Tile::Tile(BlockType blockType, glm::ivec2 &position) : m_BlockType(blockType), m_Position(position)
+    Tile::Tile(int i, int j, BlockType blockType, glm::ivec2 &position) : m_BlockType(blockType), m_Position(position), m_Index(i,j)
     {
         if(blockType != BlockType::Empty)
         {
             setBlockImage();
         }
     }
-    Tile::Tile(glm::ivec2 &position) : Tile(BlockType::Empty, position) {}
+    Tile::Tile(int i, int j, glm::ivec2 &position) : Tile(i, j, BlockType::Empty, position) {}
 
     void Tile::setBlockType(BlockType blockType, bool fromRpc)
     {
         m_BlockType = blockType;
         if(!fromRpc)
         {
-            glm::vec2 blockIndex = {m_Position.x, m_Position.y};
+            glm::vec2 blockIndex = {m_Index.x, m_Index.y};
             Engine::Client::getInstance()->callCommand("CMD_DestroyBlock", blockIndex);
         }
 
@@ -65,7 +65,7 @@ namespace Game
         if(m_BlockType == BlockType::Empty)
             return;
 
-        m_Health -= dmg * (m_BlockType == BlockType::CaveBackground ? .25f : 1.0f);
+        m_Health -= dmg * (m_BlockType == BlockType::CaveBackground ? 1.0f : 2.0f);
         printf("Health: %f\n", m_Health);
         glm::vec4 c = {1.0f, m_Health/100.0f, m_Health/100.0f, 1.0f};
         blockImage->getRenderer()->setColor(c);

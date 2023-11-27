@@ -22,8 +22,8 @@ namespace Game
     public:
         Tile(const Tile&) = delete;
         Tile() = delete;
-        explicit Tile(BlockType blockType, glm::ivec2& position);
-        explicit Tile(glm::ivec2& position);
+        explicit Tile(int i, int j, BlockType blockType, glm::ivec2& position);
+        explicit Tile(int i, int j, glm::ivec2& position);
 
         void setBlockType(BlockType blockType, bool fromRpc = false);
 
@@ -40,11 +40,12 @@ namespace Game
             return m_BlockType;
         }
     private:
+        glm::ivec2 m_Index;
         glm::ivec2 m_Position;
         BlockType m_BlockType;
         float m_Health = 100.0f;
 
-        Engine::ImageObject* blockImage;
+        Engine::ImageObject* blockImage{};
         void setBlockImage();
     };
 

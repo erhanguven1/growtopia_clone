@@ -14,6 +14,7 @@ namespace Game
     class World
     {
     public:
+        World();
         inline Tile& getTileAt(int i, int j)
         {
             assert(grid.size() - 1 >= i);
@@ -21,6 +22,7 @@ namespace Game
 
             return *grid[i][j];
         }
+        inline std::vector<std::vector<Tile*>> getGrid() const {return grid;}
     private:
         std::vector<std::vector<Tile*>> grid;
     };

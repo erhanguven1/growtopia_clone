@@ -60,7 +60,7 @@ namespace Game
         {
             if(Engine::InputHandler::isPressingKey(GLFW_KEY_D))
             {
-                auto v = glm::vec2(.01f,0);
+                auto v = glm::vec2(2.5f,0);
                 character->getTransform()->addToPosition(v);
                 if(!character->getTransform()->mirror)
                 {
@@ -70,7 +70,7 @@ namespace Game
             }
             if(Engine::InputHandler::isPressingKey(GLFW_KEY_A))
             {
-                auto v = glm::vec2(-.01f,0);
+                auto v = glm::vec2(-2.5f,0);
                 character->getTransform()->addToPosition(v);
                 if(character->getTransform()->mirror)
                 {
@@ -80,7 +80,7 @@ namespace Game
             }
             if(Engine::InputHandler::onPressKey(GLFW_KEY_W))
             {
-                auto v = glm::vec2(0,750.0f);
+                auto v = glm::vec2(0,500.0f);
                 character->getTransform()->jumpExtraMultiplier = 1.0f;
                 character->getTransform()->getRigidBody()->setVelocity(v);
             }

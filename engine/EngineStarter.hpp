@@ -8,6 +8,7 @@
 #include "Scene/SceneManager.h"
 #include "Networking/Client.h"
 #include "Input/InputHandler.h"
+#include "Rendering/Camera.h"
 
 class EngineStarter
 {
@@ -50,6 +51,8 @@ public:
         float deltaTime;
         std::chrono::steady_clock::time_point lastUpdate;
 
+        auto camera = Engine::Camera::getDefault();
+
         while (!glfwWindowShouldClose(glfwWindow))
         {
             auto now = std::chrono::steady_clock::now();
@@ -63,14 +66,16 @@ public:
             }
             lastUpdate = now;
 
-            bgfx::setViewClear(0, BGFX_CLEAR_COLOR, 0x3c3c3cff, 0.0f, 0);
+            bgfx::setViewClear(0, BGFX_CLEAR_COLOR, 0x00ffffff, 0.0f, 0);
 
             float proj[16];
-            float& zoom = window->zoomLevel;
-            float right = 800.0f * zoom;
-            float top = 600.0f * zoom;
+            float width = 800.0f;
+            float height = 600.0f;
 
-            bx::mtxOrtho(proj, 0, right, 0.0f,top, 0.0f, 1000.0f,0.0f, bgfx::getCaps()->homogeneousDepth);
+            glm::vec2 camPos = camera->getPosition();
+            const float zoom = camera->getZoom();
+
+            bx::mtxOrtho(proj, (-width/2)/zoom + camPos.x, (width/2)/zoom + camPos.x, (-height/2)/zoom + camPos.y,(height/2)/zoom + camPos.y, 0.0f, 1000.0f,0.0f, bgfx::getCaps()->homogeneousDepth);
             bgfx::setViewTransform(0, nullptr, proj);
 
             if(deltaTime < 100.0f)

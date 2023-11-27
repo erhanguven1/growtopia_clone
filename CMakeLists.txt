@@ -38,6 +38,11 @@ set(SOURCE_FILES engine/EngineStarter.hpp
         growtopia_clone/World/World.h
         growtopia_clone/World/Tile.cpp
         growtopia_clone/World/Tile.h
+        engine/Rendering/Camera.cpp
+        engine/Rendering/Camera.h
+        growtopia_clone/World/WorldLoader.cpp
+        growtopia_clone/World/WorldLoader.h
+        thirdparty/others/tinyxml2/tinyxml2.cpp
 )
 
 set(NETWORKING_SOURCE_FILES

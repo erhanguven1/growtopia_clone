@@ -20,10 +20,6 @@ namespace Game
         {
             return character->getTransform()->getPosition();
         }
-        inline Engine::Transform& getCharacterTransform()
-        {
-            return *character->getTransform();
-        }
     private:
         Engine::ImageObject* character;
         uint connectionId;

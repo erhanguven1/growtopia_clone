@@ -74,12 +74,12 @@ namespace Engine
                     auto& positionB = transformB->getPosition();
 
                     auto scaleA = transformA->getScale();
-                    scaleA.x *= 100.0f / Engine::Window::windowSize.x;
-                    scaleA.y *= 100.0f / Engine::Window::windowSize.y;
+                    scaleA.x *= 800.0f / Engine::Window::windowSize.x;
+                    scaleA.y *= 600.0f / Engine::Window::windowSize.y;
 
                     auto scaleB = transformB->getScale();
-                    scaleB.x *= 100.0f / Engine::Window::windowSize.x;
-                    scaleB.y *= 100.0f / Engine::Window::windowSize.y;
+                    scaleB.x *= 800.0f / Engine::Window::windowSize.x;
+                    scaleB.y *= 600.0f / Engine::Window::windowSize.y;
 
                     float leftA = positionA.x - scaleA.x * .5f;
                     float rightA = positionA.x + scaleA.x * .5f;
