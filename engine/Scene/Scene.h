@@ -27,6 +27,7 @@ namespace Engine
             newlyCreatedGameObjects.push_back(gameObject);
             return gameObject;
         }
+        inline unsigned int getSceneId() const {return m_SceneId;}
     private:
         const unsigned int m_SceneId;
         std::map<unsigned int, std::vector<Engine::Gameobject*>> gameObjects;

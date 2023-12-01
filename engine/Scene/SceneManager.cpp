@@ -6,13 +6,19 @@
 
 namespace Engine
 {
-    void SceneManager::setCurrentScene(Scene& scene)
+    void SceneManager::addScene(unsigned int id, Scene &sceneToAdd)
     {
+        scenes[id] = &sceneToAdd;
+    }
+    void SceneManager::setCurrentScene(int sceneId)
+    {
+        assert(scenes[sceneId]);
+        printf("Loaded scene: %u",sceneId);
         if(currentScene != nullptr)
         {
             currentScene->clear();
         }
-        currentScene = &scene;
+        currentScene = scenes[sceneId];
         currentScene->start();
     }
 } // Engine

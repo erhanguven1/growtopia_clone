@@ -4,6 +4,7 @@
 
 #include <EngineStarter.hpp>
 #include "Scenes/MainMenuScene.h"
+#include "Scenes/GameScene.h"
 #include <future>
 
 int main()
@@ -14,7 +15,10 @@ int main()
     using namespace Game;
 
     MainMenuScene mainMenuScene = MainMenuScene();
-    Engine::SceneManager::setCurrentScene(mainMenuScene);
+    Engine::SceneManager::addScene(mainMenuScene.getSceneId(), mainMenuScene);
+    GameScene gameScene = GameScene();
+    Engine::SceneManager::addScene(gameScene.getSceneId(), gameScene);
+    Engine::SceneManager::setCurrentScene(mainMenuScene.getSceneId());
 
     auto* client = Engine::Client::getInstance();
     client->connectTo("127.0.0.1",7777);

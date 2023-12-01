@@ -36,7 +36,7 @@ namespace Engine
     {
     public:
         bool debugBreak;
-        void update(float dt, bool hasRenderer = false);
+        void update(float dt, bool hasRenderer = false, bool isUi = false);
         inline void addToPosition(glm::vec2& delta)
         {
             m_position += delta;

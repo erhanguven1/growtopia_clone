@@ -6,6 +6,7 @@
 #include "Input/InputHandler.h"
 #include "../World/WorldLoader.h"
 #include "Rendering/Camera.h"
+#include "Gameobject/Button.h"
 
 namespace Game
 {
@@ -32,6 +33,12 @@ namespace Game
         bg3->getTransform()->setScaleY(419.735259f);
         bg3->getTransform()->setPositionX(-800.0f);
         bg3->getTransform()->setPositionY(1.0f/3.0f);
+
+        auto playOnlineButton = spawn<Engine::Button>("/Users/erhanguven/CLionProjects/growtopia_clone/growtopia_clone/Resources/ui/play_online_button.png");
+        playOnlineButton->getTransform()->setPositionX(-.5f);
+        playOnlineButton->getTransform()->setPositionY(.5f);
+        playOnlineButton->getTransform()->setScaleX(.15f*4.37931034483f);
+        playOnlineButton->getTransform()->setScaleY(.15f);
 
         for(float x = -400.0f; x < 400.0f; x += 50.0f)
         {
@@ -75,7 +82,6 @@ namespace Game
 
         World world = World();
         WorldLoader::saveWorld("world0", &world);
-        printf("ok");
     }
 
     void MainMenuScene::update(float dt)

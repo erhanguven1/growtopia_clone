@@ -13,7 +13,8 @@ namespace Engine
     class SceneManager
     {
     public:
-        static void setCurrentScene(Scene& scene);
+        static void addScene(unsigned int id, Scene& sceneToAdd);
+        static void setCurrentScene(int sceneId);
         inline static void spawnInCurrentScene()
         {
             assert(currentScene != nullptr);
@@ -25,6 +26,7 @@ namespace Engine
         }
     private:
         inline static Scene* currentScene;
+        inline static std::map<unsigned int, Scene*> scenes;
     };
 
 } // Engine

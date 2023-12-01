@@ -26,8 +26,6 @@ namespace Game
     private:
         std::vector<Player*> players;
         Tile* blocks[16][4];
-        int syncTest;
-        std::function<void(int)> onChangeSyncTest;
     };
 
 } // Game

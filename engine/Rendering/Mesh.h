@@ -5,6 +5,7 @@
 #ifndef GROWTOPIA_CLONE_MESH_H
 #define GROWTOPIA_CLONE_MESH_H
 
+#include <glm/glm.hpp>
 #include <bgfx/bgfx.h>
 #include <stb_image.h>
 
@@ -21,16 +22,25 @@ namespace Engine
     class Mesh
     {
     public:
+        Mesh(bool ui = false):isUi(ui)
+        {
+
+        }
         void init();
         void init(const char* imagePath);
         void bindVertexAndIndexBuffer();
         void setTexture(const char* path);
+        void setColor(glm::vec4 color);
 
     private:
         bgfx::VertexLayout vertexLayout;
         bgfx::VertexBufferHandle vertexBuffer;
         bgfx::IndexBufferHandle indexBuffer;
         bgfx::TextureHandle textureHandle;
+
+        glm::vec4 m_Color;
+
+        bool isUi = false;
 
         PosColorVertex vertices[4] = {
                 { -0.5f, -0.5f, 0xFFFFFFFF, 0,0 }, // Vertex 0: Position (-0.5, -0.5, 0), Color Blue

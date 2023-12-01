@@ -6,12 +6,12 @@
 
 namespace Engine
 {
-    ImageObject::ImageObject(const char *imagePath, const uint layerIndex)  : Gameobject(layerIndex)
+    ImageObject::ImageObject(const char *imagePath, const uint layerIndex, bool isUi)  : Gameobject(layerIndex)
     {
         if(imagePath == "")
             addRenderer();
         else
-            addRenderer(imagePath);
+            addRenderer(imagePath, isUi);
     }
 
     void ImageObject::start()

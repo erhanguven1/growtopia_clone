@@ -16,6 +16,7 @@ namespace Engine
     enum class EngineShaderPrograms
     {
         Default,
+        DefaultUI
     };
 
     class ShaderProgram
@@ -77,6 +78,7 @@ namespace Engine
                 switch (i)
                 {
                     case EngineShaderPrograms::Default:
+                    case EngineShaderPrograms::DefaultUI:
                         shaderProgram = new ShaderProgram(programHandle);
                         shaderProgram->addUniform("a_pos", bgfx::UniformType::Vec4);
                         shaderProgram->addUniform("a_scale", bgfx::UniformType::Vec4);
@@ -94,7 +96,8 @@ namespace Engine
         std::unordered_map<EngineShaderPrograms, ShaderProgram*> shaderPrograms;
         std::unordered_map<EngineShaderPrograms, const char*> shaderFileNames
         {
-            {EngineShaderPrograms::Default,"default"}
+                {EngineShaderPrograms::Default,"default"},
+                {EngineShaderPrograms::DefaultUI,"default_ui"},
         };
 
         std::string getShaderDirectoryPath(const bgfx::RendererType::Enum renderer_type)

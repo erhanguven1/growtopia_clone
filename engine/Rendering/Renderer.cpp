@@ -13,25 +13,24 @@ namespace Engine
         mesh = std::make_unique<Mesh>();
         mesh->init();
     }
-    Renderer::Renderer(const char *imagePath)
+    Renderer::Renderer(const char *imagePath, bool isUi)
     {
-        mesh = std::make_unique<Mesh>();
+        mesh = std::make_unique<Mesh>(isUi);
         mesh->init(imagePath);
     }
     void Renderer::render()
     {
         assert(mesh != nullptr);
 
-        ShaderProgram* shaderProgram = Engine::ShaderManager::getInstance()->getProgram(EngineShaderPrograms::Default);
-        shaderProgram->setUniform("a_color", &m_Color);
+        mesh->setColor(m_Color);
         mesh->bindVertexAndIndexBuffer();
-        bgfx::setState
+        /*bgfx::setState
         (0
         | BGFX_STATE_WRITE_RGB
         | BGFX_STATE_WRITE_A
         | BGFX_STATE_BLEND_ALPHA
         );
-        bgfx::submit(0, Engine::ShaderManager::getInstance()->getProgram(Engine::EngineShaderPrograms::Default)->getProgramHandle());
+        bgfx::submit(0, Engine::ShaderManager::getInstance()->getProgram(Engine::EngineShaderPrograms::Default)->getProgramHandle());*/
     }
 
     void Renderer::setTexture(const char* imagePath)

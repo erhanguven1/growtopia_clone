@@ -19,7 +19,7 @@ public:
         window = new Engine::Window(resolutionInfo, title);
         glfwWindow = window->getGlfwWindow();
 
-        shaderManager.initShaders({Engine::EngineShaderPrograms::Default});
+        shaderManager.initShaders({Engine::EngineShaderPrograms::Default, Engine::EngineShaderPrograms::DefaultUI});
 
         Engine::InputHandler* inputHandler = new Engine::InputHandler();
 
@@ -96,6 +96,7 @@ public:
     {
         // Cleanup bgfx
         delete shaderManager.getProgram(Engine::EngineShaderPrograms::Default);
+        delete shaderManager.getProgram(Engine::EngineShaderPrograms::DefaultUI);
         bgfx::shutdown();
 
         // Cleanup glfw

@@ -24,10 +24,10 @@ namespace Engine
             assert(renderer == nullptr);
             renderer = std::make_unique<Engine::Renderer>();
         }
-        inline void addRenderer(const char* imagePath)
+        inline void addRenderer(const char* imagePath, bool isUi = false)
         {
             assert(renderer == nullptr);
-            renderer = std::make_unique<Engine::Renderer>(imagePath);
+            renderer = std::make_unique<Engine::Renderer>(imagePath, isUi);
         }
 
         inline void tryRender(float dt)

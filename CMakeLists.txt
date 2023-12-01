@@ -43,6 +43,10 @@ set(SOURCE_FILES engine/EngineStarter.hpp
         growtopia_clone/World/WorldLoader.cpp
         growtopia_clone/World/WorldLoader.h
         thirdparty/others/tinyxml2/tinyxml2.cpp
+        engine/Gameobject/Button.cpp
+        engine/Gameobject/Button.h
+        growtopia_clone/Scenes/GameScene.cpp
+        growtopia_clone/Scenes/GameScene.h
 )
 
 set(NETWORKING_SOURCE_FILES
@@ -77,4 +81,7 @@ add_custom_target(
         build-shaders
         COMMAND $<TARGET_FILE:shaderc> -f ${CMAKE_CURRENT_SOURCE_DIR}/shaders/vs_default.sc -o ${CMAKE_CURRENT_SOURCE_DIR}/glsl/vs_default.bin --type v -i ${BGFX_DIR}/src --varyingdef ${CMAKE_CURRENT_SOURCE_DIR}/shaders/varying.def.sc
         COMMAND $<TARGET_FILE:shaderc> -f ${CMAKE_CURRENT_SOURCE_DIR}/shaders/fs_default.sc -o ${CMAKE_CURRENT_SOURCE_DIR}/glsl/fs_default.bin --type f -i ${BGFX_DIR}/src --varyingdef ${CMAKE_CURRENT_SOURCE_DIR}/shaders/varying.def.sc
+        COMMAND $<TARGET_FILE:shaderc> -f ${CMAKE_CURRENT_SOURCE_DIR}/shaders/vs_default_ui.sc -o ${CMAKE_CURRENT_SOURCE_DIR}/glsl/vs_default_ui.bin --type v -i ${BGFX_DIR}/src --varyingdef ${CMAKE_CURRENT_SOURCE_DIR}/shaders/varying.def.sc
+        COMMAND $<TARGET_FILE:shaderc> -f ${CMAKE_CURRENT_SOURCE_DIR}/shaders/fs_default_ui.sc -o ${CMAKE_CURRENT_SOURCE_DIR}/glsl/fs_default_ui.bin --type f -i ${BGFX_DIR}/src --varyingdef ${CMAKE_CURRENT_SOURCE_DIR}/shaders/varying.def.sc
+
 )

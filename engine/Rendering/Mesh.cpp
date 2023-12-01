@@ -3,6 +3,7 @@
 //
 
 #include <glm/vec3.hpp>
+#include <glm/vec4.hpp>
 #include "Mesh.h"
 #include "ShaderManager.h"
 #define STB_IMAGE_IMPLEMENTATION
@@ -35,11 +36,30 @@ namespace Engine
     {
         bgfx::setVertexBuffer(0, vertexBuffer);
         bgfx::setIndexBuffer(indexBuffer);
+
+        ShaderProgram* shaderProgram = !isUi ? ShaderManager::getInstance()->getProgram(EngineShaderPrograms::Default) : ShaderManager::getInstance()->getProgram(EngineShaderPrograms::DefaultUI);
+
+        shaderProgram->setUniform("a_color", &m_Color);
+
         if(textureHandle.idx != 0 && bgfx::isValid(textureHandle))
         {
-            auto s_tex = ShaderManager::getInstance()->getProgram(EngineShaderPrograms::Default)->getUniform("s_tex");
+            bgfx::UniformHandle* s_tex = shaderProgram->getUniform("s_tex");
             bgfx::setTexture(0, *s_tex, textureHandle);
         }
+
+        bgfx::setState
+                (0
+                 | BGFX_STATE_WRITE_RGB
+                 | BGFX_STATE_WRITE_A
+                 | BGFX_STATE_BLEND_ALPHA
+                );
+        bgfx::submit(0, shaderProgram->getProgramHandle());
+
+    }
+
+    void Mesh::setColor(glm::vec4 color)
+    {
+        m_Color = color;
     }
 
     void Mesh::setTexture(const char *path)
@@ -64,7 +84,5 @@ namespace Engine
             bgfx::destroy(textureHandle);
             textureHandle = bgfx::createTexture2D(uint16_t(width), uint16_t(height), false, 1, bgfx::TextureFormat::RGBA8, 0, mem);
         }
-
-
     }
 } // Engine

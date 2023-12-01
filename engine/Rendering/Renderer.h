@@ -15,7 +15,7 @@ namespace Engine
     {
     public:
         Renderer();
-        Renderer(const char* imagePath);
+        Renderer(const char* imagePath, bool isUi = false);
         void render();
         inline void setColor(glm::vec4& color)
         {
