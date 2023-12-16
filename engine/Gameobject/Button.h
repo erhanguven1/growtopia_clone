@@ -22,8 +22,10 @@ namespace Engine
         explicit Button(const char* imagePath) : ImageObject(imagePath,1, true) {}
         void update(float) override;
         inline ButtonState* getButtonState(){return &btnState;}
+        inline void registerOnClick(std::function<void()>& onClick){ m_onClick = onClick; }
     private:
         ButtonState btnState;
+        std::function<void()> m_onClick;
     };
 
 } // Engine

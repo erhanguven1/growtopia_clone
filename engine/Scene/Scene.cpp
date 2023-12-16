@@ -36,8 +36,14 @@ namespace Engine
         for (auto& pair : gameObjects)
         {
             int i = 0;
+
+            if(!isActive)
+                return;
             for(auto gameObject : pair.second)
             {
+
+                if(!isActive)
+                    return;
                 if(gameObject == nullptr)
                 {
                     continue;
@@ -141,7 +147,19 @@ namespace Engine
 
     void Scene::clear()
     {
-
+        isActive = false;
+        for (auto& pair : gameObjects)
+        {
+            for(auto gameObject : pair.second)
+            {
+                if(gameObject == nullptr)
+                {
+                    continue;
+                }
+                printf("Deleted\n");
+                pair.second.erase(pair.second.begin());
+            }
+        }
     }
 
 } // Engine

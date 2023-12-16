@@ -23,8 +23,8 @@ namespace Game
     private:
         Engine::ImageObject* character;
         uint connectionId;
-        void RPC_UpdatePlayerPosition(const std::variant<int, float, glm::vec2> &val, int connId) const;
-        void RPC_UpdatePlayerFacingDirection(const std::variant<int, float, glm::vec2> &val, int connId) const;
+        void RPC_UpdatePlayerPosition(const std::variant<int, float, glm::vec2, std::string> &val, int connId) const;
+        void RPC_UpdatePlayerFacingDirection(const std::variant<int, float, glm::vec2, std::string> &val, int connId) const;
         bool m_isMine;
     };
 

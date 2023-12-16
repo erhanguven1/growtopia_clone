@@ -21,7 +21,6 @@ int main()
     Engine::SceneManager::setCurrentScene(mainMenuScene.getSceneId());
 
     auto* client = Engine::Client::getInstance();
-    client->connectTo("127.0.0.1",7777);
     auto t = std::async(std::launch::async, &Engine::Client::receiveLoop, client);
 
     engineStarter.loop();

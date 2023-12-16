@@ -1,5 +1,3 @@
-/* ./server/main.c */
-
 #include <cstdio>
 #include <enet/enet.h>
 #include <cstring>
@@ -8,9 +6,13 @@
 #include <vector>
 #include <string>
 #include <iostream>
+#include <fstream>
+#include <tinyxml2/tinyxml2.h>
 
+void loadWorld(const char* worldName, std::string& worldData, size_t& worldDataLength);
 void onReceivePacket(const ENetEvent& event);
 void registerRpcMethodsToCommands();
+void CMD_RequestWorld(const SyncVarTypeVariant& val, int);
 void CMD_MoveTo(const SyncVarTypeVariant&, int);
 void CMD_LookAt(const SyncVarTypeVariant&, int);
 void CMD_DestroyBlock(const SyncVarTypeVariant&, int);
@@ -125,6 +127,7 @@ int main (int argc, char ** argv)
 
                     connections[event.peer->connectID] = event.peer;
                     printf("Connection ID: %u\n", event.peer->connectID);
+
                     break;
                 }
                 case ENET_EVENT_TYPE_RECEIVE:
@@ -224,17 +227,98 @@ void onReceivePacket(const ENetEvent& event)
     }
 }
 
+void loadWorld(const char* worldName, std::string& worldData, size_t& worldDataLength)
+{
+    const std::string fullPath = std::string("/Users/erhanguven/CLionProjects/growtopia_clone/growtopia_clone/Resources/Worlds/")+worldName+".xml";
+
+    using namespace tinyxml2;
+
+    auto* doc = new XMLDocument();
+    doc->LoadFile(fullPath.c_str());
+
+    /*while (getline (MyReadFile, line))
+    {
+        s+=line;
+    }*/
+
+
+    XMLPrinter printer;
+    doc->Accept(&printer);
+
+    worldData = printer.CStr();
+
+    worldDataLength = worldData.length();
+}
+
 void registerRpcMethodsToCommands()
 {
+    cmdController->commands["CMD_RequestWorld"] = &CMD_RequestWorld;
     cmdController->commands["CMD_MoveTo"] = &CMD_MoveTo;
     cmdController->commands["CMD_LookAt"] = &CMD_LookAt;
     cmdController->commands["CMD_DestroyBlock"] = &CMD_DestroyBlock;
 }
 
+void CMD_RequestWorld(const SyncVarTypeVariant& val, int connectId)
+{
+    printf("\nRequested world data\n");
+
+    std::string worldData;
+    size_t worldDataLength;
+
+    loadWorld("default", worldData, worldDataLength);
+    MsgData worldMsgData;
+    worldMsgData.type = (uint)(MessageTypes::ClientRPC);
+
+    RemoteFunctionCallData rmData;
+    rmData.m_parameterType = (uint)SyncVarTypes::STRING;
+    rmData.receiverId = connectId;
+    rmData.parameterSize = worldDataLength;
+    memcpy(rmData.m_methodName, "RPC_FetchWorld", strlen("RPC_FetchWorld"));
+
+    uint chunkSize = 384;
+    uint chunkCount = worldDataLength / chunkSize;
+    uint remainderSize = worldDataLength % chunkSize;
+
+    std::string a = worldData;
+
+    for (int i = 0; i < chunkCount; i++)
+    {
+        auto chunkData = a.substr(i*chunkSize, chunkSize);
+        memcpy(rmData.m_parameter, chunkData.c_str(), chunkSize);
+        memcpy(worldMsgData.data, &rmData, sizeof(rmData));
+
+        auto packet = enet_packet_create(&worldMsgData,sizeof(uint)+sizeof(RemoteFunctionCallData),NULL);
+
+        for(auto conn : connections)
+        {
+            if(conn.second->connectID != connectId)
+                continue;
+            enet_peer_send(conn.second,0,packet);
+        }
+    }
+
+    if(remainderSize > 0)
+    {
+        memcpy(rmData.m_methodName, "RPC_FetchWorldLast", strlen("RPC_FetchWorldLast"));
+
+        auto chunkData = a.substr(chunkCount * chunkSize, remainderSize);
+        memcpy(rmData.m_parameter, chunkData.c_str(), chunkSize);
+        memcpy(worldMsgData.data, &rmData, sizeof(rmData));
+
+        auto packet = enet_packet_create(&worldMsgData,sizeof(uint)+sizeof(RemoteFunctionCallData),NULL);
+
+        for(auto conn : connections)
+        {
+            if(conn.second->connectID != connectId)
+                continue;
+            enet_peer_send(conn.second,0,packet);
+        }
+    }
+}
+
 void CMD_MoveTo(const SyncVarTypeVariant& val, int connectId)
 {
     glm::vec2 newPosCalculatedByOwner = std::get<glm::vec2>(val);
-    printf("\nPosition: %f:%f\n", newPosCalculatedByOwner.x, newPosCalculatedByOwner.y);
 
     MsgData msgData;
     msgData.type = (uint)(MessageTypes::ClientRPC);

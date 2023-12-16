@@ -52,7 +52,9 @@ set(SOURCE_FILES engine/EngineStarter.hpp
 set(NETWORKING_SOURCE_FILES
         engine/Networking/NetworkStructs.h)
 
-set(SERVER_SOURCE_FILES server/Server.cpp)
+set(SERVER_SOURCE_FILES
+        thirdparty/others/tinyxml2/tinyxml2.cpp
+        server/Server.cpp)
 
 set(BGFX_BUILD_TOOLS ON CACHE INTERNAL "" FORCE)
 

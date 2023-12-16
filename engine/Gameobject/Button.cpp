@@ -33,7 +33,8 @@ namespace Engine
                 btnState.clicked = true;
                 glm::vec4 color = glm::vec4{.75};
                 getRenderer()->setColor(color);
-                Engine::SceneManager::setCurrentScene(1);
+                if(m_onClick)
+                    m_onClick();
             }
         }
         else if(btnState.hovering)

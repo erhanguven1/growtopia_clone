@@ -6,6 +6,8 @@
 #define GROWTOPIA_CLONE_GAMESCENE_H
 
 #include "Scene/Scene.h"
+#include "../Player/Player.h"
+#include "../World/Tile.h"
 
 namespace Game
 {
@@ -17,6 +19,15 @@ namespace Game
         {
 
         }
+        void start() override;
+        void update(float) override;
+        inline static std::string worldName;
+    private:
+        std::vector<Player*> players;
+        Tile* blocks[16][4];
+
+        std::string m_LoadedWorldXml = "";
+        void onFinishDownloadingWorld();
     };
 
 } // Game

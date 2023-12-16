@@ -58,6 +58,8 @@ namespace Engine
             connectionId = event.peer->connectID;
             printf("Connection ID = %u",event.peer->connectID);
 
+            run = true;
+
             connections.push_back(connectionId);
 
             if(!commandController.commands["RPC_OnConnect"].empty())
@@ -80,6 +82,13 @@ namespace Engine
     {
         ENetEvent event;
 
+        while (!run && !disconnectRequested)
+        {
+
+        }
+
+        printf("\nRunning Client\n");
+
         while (!disconnectRequested)
         {
             while (enet_host_service(client, &event, 30) > 0)
@@ -93,6 +102,7 @@ namespace Engine
                 }
             }
         }
+        printf("\nClosing Client\n");
     }
 
     void Client::onReceivePacket(const ENetEvent &event)
@@ -148,7 +158,8 @@ namespace Engine
                 memcpy(rmCallData, msgData.data, sizeof(RemoteFunctionCallData));
 
                 queuedCalls.push_back(rmCallData);
-                printf("\nreceived rpc!\n");
+
+                printf("\nreceived rpc: %s\n",rmCallData->m_methodName);
 
                 callRPCs();
 
@@ -224,6 +235,17 @@ namespace Engine
 
                 break;
             }
+            case SyncVarTypes::STRING:
+                char param[384] = {""};
+                memcpy(&param, rmCallData.m_parameter, 384);
+                if(!commandController.commands[rmCallData.m_methodName].empty())
+                {
+                    for(auto& cmd : commandController.commands[rmCallData.m_methodName])
+                    {
+                        cmd(param,rmCallData.receiverId);
+                    }
+                }
+                break;
         }
 
         printf("\nreceived rpc!");

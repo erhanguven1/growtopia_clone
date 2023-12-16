@@ -23,9 +23,6 @@ namespace Game
         }
         void start() override;
         void update(float) override;
-    private:
-        std::vector<Player*> players;
-        Tile* blocks[16][4];
     };
 
 } // Game

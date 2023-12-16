@@ -11,7 +11,7 @@
 #include <variant>
 #include <glm/glm.hpp>
 
-using SyncVarTypeVariant = std::variant<int, float, glm::vec2>;
+using SyncVarTypeVariant = std::variant<int, float, glm::vec2, std::string>;
 
 enum class MessageTypes
 {
@@ -25,7 +25,8 @@ enum class SyncVarTypes
 {
     INT,
     FLOAT,
-    VEC2
+    VEC2,
+    STRING
 };
 
 struct MsgData
@@ -54,5 +55,5 @@ struct RemoteFunctionCallData
     uint receiverId = -1;
     uint m_parameterType;
     uint parameterSize;
-    enet_uint8 m_parameter[64] = {0};
+    enet_uint8 m_parameter[384] = {0};
 };

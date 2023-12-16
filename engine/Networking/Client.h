@@ -71,6 +71,7 @@ namespace Engine
         std::vector<RemoteFunctionCallData*> queuedCalls;
 
         bool disconnectRequested;
+        bool run = false;
 
     private:
         Client(){}
@@ -79,6 +80,7 @@ namespace Engine
         CommandController commandController;
         ENetPeer* server;
         ENetHost *client;
+        std::string a = "";
 
         std::vector<uint> connections;
 

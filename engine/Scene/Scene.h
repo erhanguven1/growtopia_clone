@@ -34,6 +34,7 @@ namespace Engine
         std::vector<Engine::Gameobject*> newlyCreatedGameObjects;
         void checkCollisionsWithGameObject(Engine::Gameobject& gameObject);
         void clear();
+        bool isActive = true;
     };
 
 } // Engine

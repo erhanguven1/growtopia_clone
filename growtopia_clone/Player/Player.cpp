@@ -45,7 +45,7 @@ namespace Game
         }
     }
 
-    void Player::RPC_UpdatePlayerFacingDirection(const std::variant<int, float, glm::vec2> &val, int connId) const
+    void Player::RPC_UpdatePlayerFacingDirection(const std::variant<int, float, glm::vec2, std::string> &val, int connId) const
     {
         if(connId == connectionId)
         {

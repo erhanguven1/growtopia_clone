@@ -15,16 +15,18 @@ namespace Game
     {
     public:
         World();
+        World(std::vector<std::vector<Tile*>>& grid);
+        World(const std::string& xmlWorldData);
         inline Tile& getTileAt(int i, int j)
         {
-            assert(grid.size() - 1 >= i);
-            assert(grid[i].size() - 1 >= j);
+            assert(m_grid.size() - 1 >= i);
+            assert(m_grid[i].size() - 1 >= j);
 
-            return *grid[i][j];
+            return *m_grid[i][j];
         }
-        inline std::vector<std::vector<Tile*>> getGrid() const {return grid;}
+        inline std::vector<std::vector<Tile*>> getGrid() const {return m_grid;}
     private:
-        std::vector<std::vector<Tile*>> grid;
+        std::vector<std::vector<Tile*>> m_grid;
     };
 
 } // Game
