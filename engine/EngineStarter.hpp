@@ -79,7 +79,10 @@ public:
             bgfx::setViewTransform(0, nullptr, proj);
 
             if(deltaTime < 100.0f)
+            {
                 Engine::SceneManager::getCurrentScene()->update(deltaTime);
+                Engine::SceneManager::getCurrentScene()->lateUpdate(deltaTime);
+            }
 
             bgfx::frame();
 

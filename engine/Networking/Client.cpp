@@ -236,8 +236,10 @@ namespace Engine
                 break;
             }
             case SyncVarTypes::STRING:
-                char param[384] = {""};
-                memcpy(&param, rmCallData.m_parameter, 384);
+                char param[384+1];
+                memcpy(&param, rmCallData.m_parameter, 385);
+                param[384]='\0';
+                std::string s = param;
                 if(!commandController.commands[rmCallData.m_methodName].empty())
                 {
                     for(auto& cmd : commandController.commands[rmCallData.m_methodName])

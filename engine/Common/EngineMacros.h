@@ -10,12 +10,14 @@ namespace Engine
 #define CREATE_ABSTRACT_START_UPDATE \
 public:                              \
     virtual void start() = 0;        \
-    virtual void update(float) = 0   \
+    virtual void update(float) = 0;   \
+    virtual void lateUpdate(float){}; \
 
 #define CREATE_VIRTUAL_START_UPDATE \
 public:                              \
     virtual void start();        \
-    virtual void update(float);
+    virtual void update(float); \
+    virtual void lateUpdate(float){}; \
 
 
 #define AUTO_GETTER_SETTER(type, varName, defaultValue) \

@@ -7,13 +7,21 @@
 
 namespace Game
 {
+    namespace DefaultWorldValues
+    {
+        constexpr int world_x = 16;
+        constexpr int world_y = 4;
+    }
+
     World::World()
     {
-        for (int i = 0; i < 32; ++i) {
+        for (int i = 0; i < DefaultWorldValues::world_x; ++i)
+        {
             m_grid.emplace_back();
-            for (int j = 0; j < 32; ++j) {
+            for (int j = 0; j < DefaultWorldValues::world_y; ++j)
+            {
                 glm::ivec2 pos = {i,j};
-                Tile* tile = new Tile(i,j,pos);
+                Tile* tile = new Tile(i,j,BlockType::Dirt,pos);
                 m_grid.back().push_back(tile);
             }
         }
@@ -51,13 +59,11 @@ namespace Game
             {
                 m_grid[i].resize(j + 1);
             }
-            glm::ivec2 pos = {i,j};
+            glm::ivec2 pos = {(i-7.5f)*50,(j-5.5f)*50};
 
             m_grid[i][j] = new Tile(i,j,(BlockType)blockType,pos);
 
             tileElement = tileElement->NextSiblingElement();
         }
-
-        printf("asd");
     }
 } // Game

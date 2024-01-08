@@ -37,8 +37,9 @@ namespace Game
         bg3->getTransform()->setPositionX(-800.0f);
         bg3->getTransform()->setPositionY(1.0f/3.0f);
 
-        for(float x = -400.0f; x < 400.0f; x += 50.0f)
+        /*for(float x = -400.0f; x < 400.0f; x += 50.0f)
         {
+
             for (float y = -300.0f; y < -100.0f; y += 50.0f)
             {
                 int i = int((x+400)/50);
@@ -49,11 +50,12 @@ namespace Game
 
                 blocks[i][j] = ground;
             }
-        }
+        }*/
 
         auto func = [&](const SyncVarTypeVariant& val, int connId)
         {
             spawn<Player>(connId, true);
+            Engine::Client::getInstance()->callCommand("CMD_RequestWorld",0);
         };
         client->getCommandController()->commands["RPC_OnConnect"].emplace_back(func);
 
@@ -81,6 +83,7 @@ namespace Game
         {
             auto v = get<std::string>(val);
             m_LoadedWorldXml += v;
+            printf("%s",v.c_str());
         };
         client->getCommandController()->commands["RPC_FetchWorld"].emplace_back(fetchWorldFunc);
 
@@ -158,6 +161,12 @@ namespace Game
         {
             Engine::Client::getInstance()->callCommand("CMD_RequestWorld",0);
         }
+
+    }
+
+    void GameScene::lateUpdate(float dt)
+    {
+        Scene::lateUpdate(dt);
         if(Player::myPlayer)
         {
             float posX = Engine::Camera::getDefault()->getPosition().x;
@@ -175,6 +184,6 @@ namespace Game
     void GameScene::onFinishDownloadingWorld()
     {
         auto* worldFromXml = new World(m_LoadedWorldXml);
-
+        blocks = worldFromXml->getGrid();
     }
 } // Game

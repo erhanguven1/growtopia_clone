@@ -280,14 +280,17 @@ void CMD_RequestWorld(const SyncVarTypeVariant& val, int connectId)
     uint remainderSize = worldDataLength % chunkSize;
 
     std::string a = worldData;
+    std::string firstHalf;
+    std::string secondHalf;
 
     for (int i = 0; i < chunkCount; i++)
     {
         auto chunkData = a.substr(i*chunkSize, chunkSize);
+        firstHalf = chunkData;
         memcpy(rmData.m_parameter, chunkData.c_str(), chunkSize);
         memcpy(worldMsgData.data, &rmData, sizeof(rmData));
 
-        auto packet = enet_packet_create(&worldMsgData,sizeof(uint)+sizeof(RemoteFunctionCallData),NULL);
+        auto packet = enet_packet_create(&worldMsgData,sizeof(uint)+sizeof(RemoteFunctionCallData),ENET_PACKET_FLAG_RELIABLE);
 
         for(auto conn : connections)
         {
@@ -302,10 +305,12 @@ void CMD_RequestWorld(const SyncVarTypeVariant& val, int connectId)
         memcpy(rmData.m_methodName, "RPC_FetchWorldLast", strlen("RPC_FetchWorldLast"));
 
         auto chunkData = a.substr(chunkCount * chunkSize, remainderSize);
+        secondHalf = chunkData;
+
         memcpy(rmData.m_parameter, chunkData.c_str(), chunkSize);
         memcpy(worldMsgData.data, &rmData, sizeof(rmData));
 
-        auto packet = enet_packet_create(&worldMsgData,sizeof(uint)+sizeof(RemoteFunctionCallData),NULL);
+        auto packet = enet_packet_create(&worldMsgData,sizeof(uint)+sizeof(RemoteFunctionCallData),ENET_PACKET_FLAG_RELIABLE);
 
         for(auto conn : connections)
         {
@@ -314,6 +319,8 @@ void CMD_RequestWorld(const SyncVarTypeVariant& val, int connectId)
             enet_peer_send(conn.second,0,packet);
         }
     }
+    printf("%s",firstHalf.c_str());
+    printf("%s",secondHalf.c_str());
 }
 
 void CMD_MoveTo(const SyncVarTypeVariant& val, int connectId)

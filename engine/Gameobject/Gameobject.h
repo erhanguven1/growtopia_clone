@@ -30,6 +30,11 @@ namespace Engine
             renderer = std::make_unique<Engine::Renderer>(imagePath, isUi);
         }
 
+        inline void applyPhysics(float dt)
+        {
+            transform->applyPhysics(dt);
+        }
+
         inline void tryRender(float dt)
         {
             transform->update(dt, renderer != nullptr);

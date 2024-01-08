@@ -18,10 +18,23 @@ namespace Engine
         inline void addForce(const glm::vec2& direction)
         {
             velocity += direction;
+            if(m_isGrounded && velocity.y < 0)
+                velocity.y = 0;
         }
         inline void setVelocity(const glm::vec2& v)
         {
             velocity = v;
+            if(m_isGrounded)
+            {
+                if(velocity.y < 0)
+                    velocity.y = 0;
+                else
+                    m_isGrounded = false;
+            }
+        }
+        inline void setIsGrounded(bool val)
+        {
+            m_isGrounded = true;
         }
     private:
         glm::vec2 velocity = glm::vec2(0,0);
@@ -30,12 +43,15 @@ namespace Engine
         bool m_collidingRight = false;
         bool m_collidingDown = false;
         bool m_collidingUp = false;
+
+        bool m_isGrounded = false;
     };
 
     class Transform
     {
     public:
         bool debugBreak;
+        void applyPhysics(float dt);
         void update(float dt, bool hasRenderer = false, bool isUi = false);
         inline void addToPosition(glm::vec2& delta)
         {

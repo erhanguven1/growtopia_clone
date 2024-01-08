@@ -57,9 +57,13 @@ namespace Engine
                 gameObject->update(dt);
                 if(gameObject->getTransform()->getIsRigidBody())
                 {
+                    gameObject->applyPhysics(dt);
                     checkCollisionsWithGameObject(*gameObject);
                 }
+
                 gameObject->tryRender(dt);
+
+                gameObject->lateUpdate(dt);
                 i++;
             }
         }
@@ -135,6 +139,7 @@ namespace Engine
                                 positionA.y += overlapY;
                                 if(transformA->getIsRigidBody() && transformA->getRigidBody()->velocity.y < 0)
                                 {
+                                    transformA->getRigidBody()->setIsGrounded(true);
                                     transformA->getRigidBody()->velocity.y = 0;
                                 }
                             }

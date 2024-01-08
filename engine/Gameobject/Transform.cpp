@@ -10,7 +10,7 @@
 
 namespace Engine
 {
-    void Transform::update(float dt, bool hasRenderer, bool isUi)
+    void Transform::applyPhysics(float dt)
     {
         if(m_isRigidBody)
         {
@@ -20,9 +20,13 @@ namespace Engine
                 jumpExtraMultiplier *= 1.055f;
             }
             rigidBody.velocity.y -= gravity * jumpExtraMultiplier;
+
             m_position.y += rigidBody.velocity.y * dt * .5f;
         }
+    }
 
+    void Transform::update(float dt, bool hasRenderer, bool isUi)
+    {
         if(hasRenderer)
         {
             ShaderProgram* shaderProgram;
