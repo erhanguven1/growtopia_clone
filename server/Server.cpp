@@ -5,8 +5,6 @@
 #include <unordered_map>
 #include <vector>
 #include <string>
-#include <iostream>
-#include <fstream>
 #include <tinyxml2/tinyxml2.h>
 
 void loadWorld(const char* worldName, std::string& worldData, size_t& worldDataLength);
@@ -19,6 +17,8 @@ void CMD_DestroyBlock(const SyncVarTypeVariant&, int);
 
 std::unordered_map<enet_uint32 , ENetPeer*> connections;
 std::vector<SyncVarTypeVariant> variables;
+
+std::string WorldData;
 
 class CommandController
 {
@@ -262,10 +262,9 @@ void CMD_RequestWorld(const SyncVarTypeVariant& val, int connectId)
 {
     printf("\nRequested world data\n");
 
-    std::string worldData;
     size_t worldDataLength;
 
-    loadWorld("default", worldData, worldDataLength);
+    loadWorld("default", WorldData, worldDataLength);
     MsgData worldMsgData;
     worldMsgData.type = (uint)(MessageTypes::ClientRPC);
 
@@ -279,7 +278,7 @@ void CMD_RequestWorld(const SyncVarTypeVariant& val, int connectId)
     uint chunkCount = worldDataLength / chunkSize;
     uint remainderSize = worldDataLength % chunkSize;
 
-    std::string a = worldData;
+    std::string a = WorldData;
     std::string firstHalf;
     std::string secondHalf;
 

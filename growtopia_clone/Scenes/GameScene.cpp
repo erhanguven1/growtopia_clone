@@ -9,6 +9,8 @@
 #include "../World/WorldLoader.h"
 #include "Input/InputHandler.h"
 #include <future>
+#include "glm/vec2.hpp"
+#include "glm/gtx/compatibility.hpp"
 
 namespace Game
 {
@@ -177,7 +179,12 @@ namespace Game
             if(Player::myPlayer->getCharacterPosition().x > -400 && Player::myPlayer->getCharacterPosition().x < 400)
                 posX = Player::myPlayer->getCharacterPosition().x;
 
-            Engine::Camera::getDefault()->setPosition({posX,posY});
+            glm::vec2 camPos = Engine::Camera::getDefault()->getPosition();
+            glm::vec2 newPos = {posX, posY};
+
+            glm::vec2 result = glm::lerp(camPos, newPos, dt * 15);
+
+            Engine::Camera::getDefault()->setPosition(result);
         }
     }
 
