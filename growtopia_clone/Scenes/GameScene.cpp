@@ -161,27 +161,23 @@ namespace Game
 
         if(Engine::InputHandler::isPressingKey(GLFW_KEY_RIGHT))
         {
-            auto newPos = Engine::Camera::getDefault()->getPosition()+glm::vec2(150.0f*dt,0.0f);
-            Engine::Camera::getDefault()->setPosition(newPos);
+            camOffset+=glm::vec2(150.0f*dt,0.0f);
         }
         if(Engine::InputHandler::isPressingKey(GLFW_KEY_LEFT))
         {
-            auto newPos = Engine::Camera::getDefault()->getPosition()-glm::vec2(150.0f*dt,0.0f);
-            Engine::Camera::getDefault()->setPosition(newPos);
+            camOffset-=glm::vec2(150.0f*dt,0.0f);
         }
         if(Engine::InputHandler::isPressingKey(GLFW_KEY_UP))
         {
-            auto newPos = Engine::Camera::getDefault()->getPosition()+glm::vec2(0.0f,150.0f*dt);
-            Engine::Camera::getDefault()->setPosition(newPos);
+            camOffset+=glm::vec2(0.0f,150.0f*dt);
         }
         if(Engine::InputHandler::isPressingKey(GLFW_KEY_DOWN))
         {
-            auto newPos = Engine::Camera::getDefault()->getPosition()-glm::vec2(0.0f,150.0f*dt);
-            Engine::Camera::getDefault()->setPosition(newPos);
+            camOffset-=glm::vec2(0.0f,150.0f*dt);
         }
         if(Engine::InputHandler::onPressKey(GLFW_KEY_C))
         {
-            Engine::Client::getInstance()->callCommand("CMD_RequestWorld",0);
+            camOffset = glm::vec2(0.0f);
         }
 
     }
@@ -201,6 +197,7 @@ namespace Game
 
             glm::vec2 camPos = Engine::Camera::getDefault()->getPosition();
             glm::vec2 newPos = {posX, posY};
+            newPos += camOffset;
 
             glm::vec2 result = glm::lerp(camPos, newPos, dt * 15);
 

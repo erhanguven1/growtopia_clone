@@ -28,6 +28,7 @@ namespace Game
         std::vector<std::vector<Tile*>> blocks;
 
         std::string m_LoadedWorldXml = "";
+        glm::vec2 camOffset;
         void onFinishDownloadingWorld();
     };
 
