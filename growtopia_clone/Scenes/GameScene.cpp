@@ -81,6 +81,16 @@ namespace Game
         };
         client->getCommandController()->commands["RPC_OnBlockDestroyed"].emplace_back(onBlockDestroyed);
 
+        auto onBlockSet = [&](const SyncVarTypeVariant& val, int connId)
+        {
+            //if(connId == Engine::Client::getInstance()->getConnectionId())
+            //    return;
+
+            auto blockIndex = (glm::ivec2)std::get<glm::vec2>(val);
+            blocks[blockIndex.x][blockIndex.y]->setBlockType(BlockType::Dirt, true);
+        };
+        client->getCommandController()->commands["RPC_OnBlockSet"].emplace_back(onBlockSet);
+
         auto fetchWorldFunc = [&](const SyncVarTypeVariant& val, int connId)
         {
             auto v = get<std::string>(val);
@@ -107,6 +117,9 @@ namespace Game
     {
         Scene::update(dt);
 
+        if(blocks.empty())
+            return;
+
         float zoom = Engine::Camera::getDefault()->getZoom();
 
         int mouseX =(int)((Engine::InputHandler::mousePosition.x - 400.0f) / zoom + Engine::Camera::getDefault()->getPosition().x);
@@ -114,22 +127,29 @@ namespace Game
         int block_i = (mouseX+400)/50;
         int block_j = (int)(float(-mouseY+250)/50.0f + 1);
 
-        bool blockExists = block_i >= 0 && block_i <= 15 && block_j >= 0 && block_j <= 3;
+        bool blockExists = block_i >= 0 && block_i <= 15 && block_j >= 0 && block_j <= 7;
 
-        if(blockExists && blocks[block_i][block_j] != nullptr && Engine::InputHandler::isPressingMouseButton(GLFW_MOUSE_BUTTON_LEFT))
+        if(blockExists && blocks[block_i][block_j] != nullptr)
         {
-
-            glm::vec2& playerPos =Player::myPlayer->getCharacterPosition();
-            glm::vec2& blockPos =blocks[block_i][block_j]->getBlockPosition();
-
-            printf("%d,%d. Distance to player = %f\n",block_i,block_j,glm::distance(playerPos,blockPos));
-
-            if(glm::distance(playerPos,blockPos) < 120.0f)
+            if(Engine::InputHandler::isPressingMouseButton(GLFW_MOUSE_BUTTON_LEFT) && blocks[block_i][block_j]->getBlockType() != BlockType::Empty)
             {
-                blocks[block_i][block_j]->takeDamage(dt * 100);
+                glm::vec2& playerPos =Player::myPlayer->getCharacterPosition();
+                glm::vec2& blockPos =blocks[block_i][block_j]->getBlockPosition();
+
+                printf("%d,%d. Distance to player = %f\n",block_i,block_j,glm::distance(playerPos,blockPos));
+
+                if(glm::distance(playerPos,blockPos) < 120.0f)
+                {
+                    blocks[block_i][block_j]->takeDamage(dt * 100);
+                }
+            }
+            else if(Engine::InputHandler::onPressMouseButton(GLFW_MOUSE_BUTTON_RIGHT))
+            {
+                printf("\nSet block\n");
+                glm::vec2 blockIndex = {block_i, block_j};
+                Engine::Client::getInstance()->callCommand("CMD_SetBlock", blockIndex);
             }
         }
-
         if(Engine::InputHandler::isPressingKey(GLFW_KEY_Z))
         {
             Engine::Camera::getDefault()->changeZoom(.01f);

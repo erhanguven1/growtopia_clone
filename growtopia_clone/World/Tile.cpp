@@ -13,6 +13,9 @@ namespace Game
         if(blockType != BlockType::Empty)
         {
             setBlockImage();
+
+            if(blockType == BlockType::CaveBackground)
+                blockImage->getTransform()->hasCollider = false;
         }
     }
     Tile::Tile(int i, int j, glm::ivec2 &position) : Tile(i, j, BlockType::Empty, position) {}
@@ -36,18 +39,23 @@ namespace Game
         }
         else
         {
+            setBlockImage();
+
             if(blockType == BlockType::CaveBackground)
                 blockImage->getTransform()->hasCollider = false;
-
-            setBlockImage();
+            else
+                blockImage->getTransform()->hasCollider = true;
         }
     }
 
     void Tile::setBlockImage()
     {
-        if(blockImage == nullptr)
+        std::string imageResourcesPath = "/Users/erhanguven/CLionProjects/growtopia_clone/growtopia_clone/Resources/";
+        std::string imagePath = imageResourcesPath + (m_BlockType == BlockType::Dirt ? "dirt_mid.png" : "cave_bg.png");
+
+        if(blockImage == nullptr || blockImage->isDead)
         {
-            blockImage = Engine::SceneManager::getCurrentScene()->spawn<Engine::ImageObject>("/Users/erhanguven/CLionProjects/growtopia_clone/growtopia_clone/Resources/dirt_mid.png",1);
+            blockImage = Engine::SceneManager::getCurrentScene()->spawn<Engine::ImageObject>(imagePath.c_str(),1);
             blockImage->getTransform()->setPositionX(m_Position.x);
             blockImage->getTransform()->setPositionY(m_Position.y);
             blockImage->getTransform()->setScaleX(50);
@@ -56,7 +64,7 @@ namespace Game
         }
         else
         {
-            blockImage->getRenderer()->setTexture("/Users/erhanguven/CLionProjects/growtopia_clone/growtopia_clone/Resources/cave_bg.png");
+            blockImage->getRenderer()->setTexture(imagePath.c_str());
         }
     }
 

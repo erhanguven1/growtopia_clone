@@ -10,7 +10,7 @@ namespace Game
     namespace DefaultWorldValues
     {
         constexpr int world_x = 16;
-        constexpr int world_y = 4;
+        constexpr int world_y = 8;
     }
 
     World::World()
@@ -21,7 +21,7 @@ namespace Game
             for (int j = 0; j < DefaultWorldValues::world_y; ++j)
             {
                 glm::ivec2 pos = {i,j};
-                Tile* tile = new Tile(i,j,BlockType::Dirt,pos);
+                Tile* tile = new Tile(i,j,j <= 4 ? BlockType::Dirt : BlockType::Empty,pos);
                 m_grid.back().push_back(tile);
             }
         }
