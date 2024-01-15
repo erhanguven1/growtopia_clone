@@ -62,21 +62,6 @@ namespace Game
             icon->getTransform()->setScaleY(.25f);
         }
 
-        /*for(float x = -400.0f; x < 400.0f; x += 50.0f)
-        {
-
-            for (float y = -300.0f; y < -100.0f; y += 50.0f)
-            {
-                int i = int((x+400)/50);
-                int j = int((y+300)/50);
-
-                glm::ivec2 pos = {x+25.0f,y+25.0f};
-                auto ground = new Tile(i,j,BlockType::Dirt, pos);
-
-                blocks[i][j] = ground;
-            }
-        }*/
-
         auto func = [&](const SyncVarTypeVariant& val, int connId)
         {
             spawn<Player>(connId, true);

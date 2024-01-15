@@ -15,17 +15,18 @@ namespace Game
     {
     public:
         InventoryItem() = delete;
+        InventoryItem(BlockType blockType, unsigned int count) : m_blockType(blockType), m_count(count) {}
     private:
         BlockType m_blockType = BlockType::Empty;
-        unsigned int count = 0;
+        unsigned int m_count = 0;
     };
 
     class Inventory
     {
     public:
-        Inventory(const std::string& xmlInventoryData);
+        explicit Inventory(const std::string& xmlInventoryData);
     private:
-        std::vector<InventoryItem*> inventoryItems;
+        std::vector<InventoryItem*> m_inventoryItems;
     };
 
 } // Game

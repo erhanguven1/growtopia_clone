@@ -28,6 +28,7 @@ namespace Game
         bool m_isMine;
         void RPC_UpdatePlayerPosition(const std::variant<int, float, glm::vec2, std::string> &val, int connId) const;
         void RPC_UpdatePlayerFacingDirection(const std::variant<int, float, glm::vec2, std::string> &val, int connId) const;
+        std::string m_LoadedInventoryXml = "";
     };
 
 } // Game

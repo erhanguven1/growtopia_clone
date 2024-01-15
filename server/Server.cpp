@@ -8,9 +8,11 @@
 #include <tinyxml2/tinyxml2.h>
 
 void loadWorld(const char* worldName, std::string& worldData, size_t& worldDataLength);
+void loadInventory(const char* playerName, std::string& inventoryData, size_t& inventoryDataLength);
 void onReceivePacket(const ENetEvent& event);
 void registerRpcMethodsToCommands();
 void CMD_RequestWorld(const SyncVarTypeVariant& val, int);
+void CMD_RequestInventory(const SyncVarTypeVariant&, int);
 void CMD_MoveTo(const SyncVarTypeVariant&, int);
 void CMD_LookAt(const SyncVarTypeVariant&, int);
 void CMD_DestroyBlock(const SyncVarTypeVariant&, int);
@@ -20,6 +22,7 @@ std::unordered_map<enet_uint32 , ENetPeer*> connections;
 std::vector<SyncVarTypeVariant> variables;
 
 std::string WorldData;
+std::string InventoryData;
 
 class CommandController
 {
@@ -251,6 +254,24 @@ void loadWorld(const char* worldName, std::string& worldData, size_t& worldDataL
     worldDataLength = worldData.length();
 }
 
+void loadInventory(const char* playerName, std::string& inventoryData, size_t& inventoryDataLength)
+{
+    const std::string fullPath = std::string("/Users/erhanguven/CLionProjects/growtopia_clone/growtopia_clone/Resources/Inventories/")+playerName+".xml";
+
+    using namespace tinyxml2;
+
+    auto* doc = new XMLDocument();
+    doc->LoadFile(fullPath.c_str());
+
+
+    XMLPrinter printer;
+    doc->Accept(&printer);
+
+    inventoryData = printer.CStr();
+
+    inventoryDataLength = inventoryData.length();
+}
+
 void registerRpcMethodsToCommands()
 {
     cmdController->commands["CMD_RequestWorld"] = &CMD_RequestWorld;
@@ -258,6 +279,7 @@ void registerRpcMethodsToCommands()
     cmdController->commands["CMD_LookAt"] = &CMD_LookAt;
     cmdController->commands["CMD_DestroyBlock"] = &CMD_DestroyBlock;
     cmdController->commands["CMD_SetBlock"] = &CMD_SetBlock;
+    cmdController->commands["CMD_RequestInventory"] = &CMD_RequestInventory;
 }
 
 void CMD_RequestWorld(const SyncVarTypeVariant& val, int connectId)
@@ -312,6 +334,70 @@ void CMD_RequestWorld(const SyncVarTypeVariant& val, int connectId)
         memcpy(worldMsgData.data, &rmData, sizeof(rmData));
 
         auto packet = enet_packet_create(&worldMsgData,sizeof(uint)+sizeof(RemoteFunctionCallData),ENET_PACKET_FLAG_RELIABLE);
+
+        for(auto conn : connections)
+        {
+            if(conn.second->connectID != connectId)
+                continue;
+            enet_peer_send(conn.second,0,packet);
+        }
+    }
+    printf("%s",firstHalf.c_str());
+    printf("%s",secondHalf.c_str());
+}
+
+void CMD_RequestInventory(const SyncVarTypeVariant& val, int connectId)
+{
+    printf("\nRequested inventory data\n");
+
+    size_t invDataLength;
+
+    loadInventory("default", InventoryData, invDataLength);
+    MsgData invMsgData;
+    invMsgData.type = (uint)(MessageTypes::ClientRPC);
+
+    RemoteFunctionCallData rmData;
+    rmData.m_parameterType = (uint)SyncVarTypes::STRING;
+    rmData.receiverId = connectId;
+    rmData.parameterSize = invDataLength;
+    memcpy(rmData.m_methodName, "RPC_FetchInventory", strlen("RPC_FetchInventory"));
+
+    uint chunkSize = 384;
+    uint chunkCount = invDataLength / chunkSize;
+    uint remainderSize = invDataLength % chunkSize;
+
+    std::string a = InventoryData;
+    std::string firstHalf;
+    std::string secondHalf;
+
+    for (int i = 0; i < chunkCount; i++)
+    {
+        auto chunkData = a.substr(i*chunkSize, chunkSize);
+        firstHalf = chunkData;
+        memcpy(rmData.m_parameter, chunkData.c_str(), chunkSize);
+        memcpy(invMsgData.data, &rmData, sizeof(rmData));
+
+        auto packet = enet_packet_create(&invMsgData,sizeof(uint)+sizeof(RemoteFunctionCallData),ENET_PACKET_FLAG_RELIABLE);
+
+        for(auto conn : connections)
+        {
+            if(conn.second->connectID != connectId)
+                continue;
+            enet_peer_send(conn.second,0,packet);
+        }
+    }
+
+    if(remainderSize > 0)
+    {
+        memcpy(rmData.m_methodName, "RPC_FetchInventoryLast", strlen("RPC_FetchInventoryLast"));
+
+        auto chunkData = a.substr(chunkCount * chunkSize, remainderSize);
+        secondHalf = chunkData;
+
+        memcpy(rmData.m_parameter, chunkData.c_str(), chunkSize);
+        memcpy(invMsgData.data, &rmData, sizeof(rmData));
+
+        auto packet = enet_packet_create(&invMsgData,sizeof(uint)+sizeof(RemoteFunctionCallData),ENET_PACKET_FLAG_RELIABLE);
 
         for(auto conn : connections)
         {

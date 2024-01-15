@@ -33,6 +33,28 @@ namespace Game
             RPC_UpdatePlayerFacingDirection(val, connId);
         };
         client->getCommandController()->commands["RPC_UpdatePlayerFacingDirection"].emplace_back(onUpdatePlayerFacingDirection);
+
+        auto onFetchInventory = [&](const SyncVarTypeVariant& val, int connId)
+        {
+            auto v = get<std::string>(val);
+            m_LoadedInventoryXml += v;
+        };
+        client->getCommandController()->commands["RPC_FetchInventory"].emplace_back(onFetchInventory);
+
+        auto onFetchInventoryLast = [&](const SyncVarTypeVariant& val, int connId)
+        {
+            auto v = get<std::string>(val);
+            m_LoadedInventoryXml += v;
+
+            inventory = std::make_unique<Inventory>(m_LoadedInventoryXml);
+        };
+        client->getCommandController()->commands["RPC_FetchInventoryLast"].emplace_back(onFetchInventoryLast);
+
+
+        if (m_isMine)
+        {
+            client->callCommand("CMD_RequestInventory", (int)connectionId);
+        }
     }
 
     void Player::RPC_UpdatePlayerPosition(const SyncVarTypeVariant& val, int connId) const
