@@ -21,7 +21,7 @@ namespace Game
             for (int j = 0; j < DefaultWorldValues::world_y; ++j)
             {
                 glm::ivec2 pos = {i,j};
-                Tile* tile = new Tile(i,j,j <= 4 ? BlockType::Dirt : BlockType::Empty,pos);
+                Tile* tile = new Tile(i,j,j <= 2 ? BlockType::Dirt : BlockType::Empty,pos);
                 m_grid.back().push_back(tile);
             }
         }

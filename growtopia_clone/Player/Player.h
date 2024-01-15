@@ -6,6 +6,7 @@
 #define GROWTOPIA_CLONE_PLAYER_H
 
 #include "Gameobject/ImageObject.h"
+#include "Inventory.h"
 
 namespace Game
 {
@@ -21,11 +22,12 @@ namespace Game
             return character->getTransform()->getPosition();
         }
     private:
-        Engine::ImageObject* character;
+        std::unique_ptr<Engine::ImageObject> character = nullptr;
+        std::unique_ptr<Inventory> inventory = nullptr;
         uint connectionId;
+        bool m_isMine;
         void RPC_UpdatePlayerPosition(const std::variant<int, float, glm::vec2, std::string> &val, int connId) const;
         void RPC_UpdatePlayerFacingDirection(const std::variant<int, float, glm::vec2, std::string> &val, int connId) const;
-        bool m_isMine;
     };
 
 } // Game

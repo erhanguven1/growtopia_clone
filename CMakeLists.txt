@@ -47,6 +47,9 @@ set(SOURCE_FILES engine/EngineStarter.hpp
         engine/Gameobject/Button.h
         growtopia_clone/Scenes/GameScene.cpp
         growtopia_clone/Scenes/GameScene.h
+        growtopia_clone/Player/Inventory.cpp
+        growtopia_clone/Player/Inventory.h
+        growtopia_clone/Common/BlockTypes.h
 )
 
 set(NETWORKING_SOURCE_FILES
@@ -62,6 +65,7 @@ add_subdirectory("thirdparty/bgfx.cmake")
 include_directories("thirdparty/bgfx.cmake/bgfx/include")
 include_directories("thirdparty/others")
 include_directories("engine")
+include_directories("growtopia_clone")
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}")
 

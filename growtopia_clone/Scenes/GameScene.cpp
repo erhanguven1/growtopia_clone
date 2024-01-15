@@ -39,6 +39,29 @@ namespace Game
         bg3->getTransform()->setPositionX(-800.0f);
         bg3->getTransform()->setPositionY(1.0f/3.0f);
 
+        auto inventoryBg = spawn<Engine::ImageObject>("/Users/erhanguven/CLionProjects/growtopia_clone/growtopia_clone/Resources/ui/filled_square.png",10,true);
+        inventoryBg->getTransform()->setScaleX(1.265f);
+        inventoryBg->getTransform()->setScaleY(.3f);
+        inventoryBg->getTransform()->setPositionY(-.75f);
+
+        glm::vec4 c = {0,0.3f,0.5f,1};
+        inventoryBg->getRenderer()->setColor(c);
+
+        for (int i = 0; i < 5; ++i)
+        {
+            auto frame = spawn<Engine::ImageObject>("/Users/erhanguven/CLionProjects/growtopia_clone/growtopia_clone/Resources/ui/square_ui.png",10,true);
+            frame->getTransform()->setPositionX(-.495f + i * .25f);
+            frame->getTransform()->setPositionY(-.75f);
+            frame->getTransform()->setScaleX(.25f*.75f);
+            frame->getTransform()->setScaleY(.25f);
+
+            auto icon = spawn<Engine::Button>("/Users/erhanguven/CLionProjects/growtopia_clone/growtopia_clone/Resources/dirt_mid.png",10);
+            icon->getTransform()->setPositionX(-.495f + i * .25f);
+            icon->getTransform()->setPositionY(-.75f);
+            icon->getTransform()->setScaleX(.25f*.75f);
+            icon->getTransform()->setScaleY(.25f);
+        }
+
         /*for(float x = -400.0f; x < 400.0f; x += 50.0f)
         {
 

@@ -7,15 +7,10 @@
 
 #include <glm/vec2.hpp>
 #include <Gameobject/ImageObject.h>
+#include <Common/BlockTypes.h>
 
 namespace Game
 {
-    enum class BlockType
-    {
-        Empty = 100,
-        Dirt,
-        CaveBackground
-    };
 
     class Tile
     {
