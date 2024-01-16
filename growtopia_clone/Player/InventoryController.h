@@ -32,11 +32,12 @@ namespace Game
     private:
         std::unique_ptr<InventoryData> inventoryData;
         std::unique_ptr<InventoryView> inventoryView;
-        std::unique_ptr<InventoryItemData> chosenItem;
+        InventoryItemData* chosenItem;
 
         std::string m_LoadedInventoryXml = "";
 
         void onFinishedDownloadingXml();
+        void onChosenItemUsedUp();
     };
 
 } // Game

@@ -22,6 +22,7 @@ namespace Engine
 
     void Scene::update(float dt)
     {
+
         if(!newlyCreatedGameObjects.empty())
         {
             for(const auto& gameObject : newlyCreatedGameObjects)
@@ -51,7 +52,7 @@ namespace Engine
                 if(gameObject->isDead)
                 {
                     pair.second.erase(pair.second.begin() + i);
-                    gameObject = nullptr;
+                    delete gameObject;
                     continue;
                 }
                 gameObject->update(dt);
@@ -65,6 +66,23 @@ namespace Engine
 
                 gameObject->lateUpdate(dt);
                 i++;
+            }
+        }
+
+        if (!isActive)
+        {
+            for (auto& pair : gameObjects)
+            {
+                for(auto gameObject : pair.second)
+                {
+                    if(gameObject == nullptr)
+                    {
+                        continue;
+                    }
+                    printf("Deleted\n");
+                    pair.second.erase(pair.second.begin());
+                    delete gameObject;
+                }
             }
         }
     }
@@ -153,18 +171,6 @@ namespace Engine
     void Scene::clear()
     {
         isActive = false;
-        for (auto& pair : gameObjects)
-        {
-            for(auto gameObject : pair.second)
-            {
-                if(gameObject == nullptr)
-                {
-                    continue;
-                }
-                printf("Deleted\n");
-                pair.second.erase(pair.second.begin());
-            }
-        }
     }
 
 } // Engine

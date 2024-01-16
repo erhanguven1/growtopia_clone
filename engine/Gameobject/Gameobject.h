@@ -19,6 +19,12 @@ namespace Engine
         Gameobject() = delete;
         explicit Gameobject(uint layerIndex);
 
+        virtual ~Gameobject()
+        {
+            printf("calling destructor");
+
+        }
+
         inline void addRenderer()
         {
             assert(renderer == nullptr);

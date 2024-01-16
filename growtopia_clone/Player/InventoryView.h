@@ -18,8 +18,9 @@ namespace Game
     public:
         InventoryView()=delete;
         InventoryView(std::vector<InventoryItemData*> inventoryItems, InventoryController* inventoryController);
+        void deleteItem(BlockType blockType);
     private:
-        std::vector<InventoryItemButton*> inventoryItemButtons;
+        std::unordered_map<BlockType,InventoryItemButton*> inventoryItemButtons;
     };
 
     class InventoryItemButton : public Engine::Button

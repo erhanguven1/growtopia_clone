@@ -32,8 +32,13 @@ namespace Game
             icon->getTransform()->setScaleX(.2f*.75f);
             icon->getTransform()->setScaleY(.2f);
 
-            inventoryItemButtons.push_back(icon);
+            inventoryItemButtons[inventoryItems[i]->getBlockType()]=icon;
         }
+    }
+
+    void InventoryView::deleteItem(BlockType blockType)
+    {
+        inventoryItemButtons[blockType]->isDead = true;
     }
 
     InventoryItemButton::InventoryItemButton(const char *path, InventoryItemData *invItemData,

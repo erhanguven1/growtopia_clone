@@ -16,6 +16,10 @@ namespace Game
     public:
         InventoryItemData() = delete;
         InventoryItemData(BlockType blockType, unsigned int count) : m_blockType(blockType), m_count(count) {}
+        InventoryItemData(const InventoryItemData& inventoryItemData)
+        {
+
+        }
 
         inline BlockType getBlockType() { return m_blockType; }
         inline unsigned int getCount() const { return m_count; }
@@ -24,6 +28,8 @@ namespace Game
         {
             if (m_count > 0)
                 m_count--;
+
+            printf("\n%d 's new count: %d\n", m_blockType, m_count);
         }
 
     private:

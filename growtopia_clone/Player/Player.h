@@ -21,10 +21,13 @@ namespace Game
         {
             return character->getTransform()->getPosition();
         }
-        inline BlockType getChosenInventoryItemData()
+        inline BlockType getChosenInventoryItemData() const
         {
+            if (inventoryController == nullptr)
+                return BlockType::Empty;
             return inventoryController->getCurrentItemType();
         }
+        inline void useCurrentItem() const { inventoryController->useCurrentItem(); }
     private:
         std::unique_ptr<Engine::ImageObject> character = nullptr;
         std::unique_ptr<InventoryController> inventoryController = nullptr;

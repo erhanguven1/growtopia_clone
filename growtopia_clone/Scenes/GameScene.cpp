@@ -47,21 +47,6 @@ namespace Game
         glm::vec4 c = {0,0.3f,0.5f,1};
         inventoryBg->getRenderer()->setColor(c);
 
-        /*for (int i = 0; i < 5; ++i)
-        {
-            auto frame = spawn<Engine::ImageObject>("/Users/erhanguven/CLionProjects/growtopia_clone/growtopia_clone/Resources/ui/square_ui.png",10,true);
-            frame->getTransform()->setPositionX(-.495f + i * .25f);
-            frame->getTransform()->setPositionY(-.75f);
-            frame->getTransform()->setScaleX(.25f*.75f);
-            frame->getTransform()->setScaleY(.25f);
-
-            auto icon = spawn<Engine::Button>("/Users/erhanguven/CLionProjects/growtopia_clone/growtopia_clone/Resources/dirt_mid.png",10);
-            icon->getTransform()->setPositionX(-.495f + i * .25f);
-            icon->getTransform()->setPositionY(-.75f);
-            icon->getTransform()->setScaleX(.25f*.75f);
-            icon->getTransform()->setScaleY(.25f);
-        }*/
-
         auto func = [&](const SyncVarTypeVariant& val, int connId)
         {
             spawn<Player>(connId, true);
@@ -160,6 +145,7 @@ namespace Game
 
                 if (chosenBlockType != BlockType::Empty)
                 {
+                    Player::myPlayer->useCurrentItem();
                     Engine::Client::getInstance()->callCommand("CMD_SetBlock", msg);
                 }
             }
