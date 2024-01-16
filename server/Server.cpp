@@ -217,10 +217,19 @@ void onReceivePacket(const ENetEvent& event)
                     break;
                 }
                 case SyncVarTypes::VEC2:
+                {
                     glm::vec2 param;
                     memcpy(&param, rmCallData.m_parameter, sizeof(glm::vec2));
                     cmdController->commands.at(rmCallData.m_methodName)(param, event.peer->connectID);
                     break;
+                }
+                case SyncVarTypes::VEC3:
+                {
+                    glm::vec3 param;
+                    memcpy(&param, rmCallData.m_parameter, sizeof(glm::vec3));
+                    cmdController->commands.at(rmCallData.m_methodName)(param, event.peer->connectID);
+                    break;
+                }
             }
 
             break;
@@ -239,12 +248,6 @@ void loadWorld(const char* worldName, std::string& worldData, size_t& worldDataL
 
     auto* doc = new XMLDocument();
     doc->LoadFile(fullPath.c_str());
-
-    /*while (getline (MyReadFile, line))
-    {
-        s+=line;
-    }*/
-
 
     XMLPrinter printer;
     doc->Accept(&printer);
@@ -491,16 +494,16 @@ void CMD_DestroyBlock(const SyncVarTypeVariant& val, int connectId)
 void CMD_SetBlock(const SyncVarTypeVariant& val, int connectId)
 {
     printf("\nSet block\n");
-    glm::vec2 setBlock = std::get<glm::vec2>(val);
+    glm::vec3 msg = std::get<glm::vec3>(val);
 
     MsgData msgData;
     msgData.type = (uint)(MessageTypes::ClientRPC);
 
     RemoteFunctionCallData rmData;
-    rmData.m_parameterType = (uint)SyncVarTypes::VEC2;
+    rmData.m_parameterType = (uint)SyncVarTypes::VEC3;
     rmData.parameterSize = sizeof(glm::vec2);
     rmData.receiverId = connectId;
-    memcpy(rmData.m_parameter, &setBlock, sizeof(setBlock));
+    memcpy(rmData.m_parameter, &msg, sizeof(msg));
     memcpy(rmData.m_methodName, "RPC_OnBlockSet", strlen("RPC_OnBlockSet"));
 
     memcpy(msgData.data, &rmData, sizeof(rmData));

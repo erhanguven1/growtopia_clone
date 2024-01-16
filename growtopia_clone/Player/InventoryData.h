@@ -18,6 +18,13 @@ namespace Game
         InventoryItemData(BlockType blockType, unsigned int count) : m_blockType(blockType), m_count(count) {}
 
         inline BlockType getBlockType() { return m_blockType; }
+        inline unsigned int getCount() const { return m_count; }
+
+        inline void decreaseItemCount(unsigned int count)
+        {
+            if (m_count > 0)
+                m_count--;
+        }
 
     private:
         BlockType m_blockType = BlockType::Empty;

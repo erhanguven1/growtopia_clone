@@ -25,7 +25,6 @@ namespace Game
             {
                 case BlockType::Empty:
                     return "";
-                    break;
                 case BlockType::Dirt:
                     return "dirt_mid.png";
                 case BlockType::CaveBackground:

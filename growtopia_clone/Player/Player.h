@@ -21,13 +21,17 @@ namespace Game
         {
             return character->getTransform()->getPosition();
         }
+        inline BlockType getChosenInventoryItemData()
+        {
+            return inventoryController->getCurrentItemType();
+        }
     private:
         std::unique_ptr<Engine::ImageObject> character = nullptr;
         std::unique_ptr<InventoryController> inventoryController = nullptr;
         uint connectionId;
         bool m_isMine;
-        void RPC_UpdatePlayerPosition(const std::variant<int, float, glm::vec2, std::string> &val, int connId) const;
-        void RPC_UpdatePlayerFacingDirection(const std::variant<int, float, glm::vec2, std::string> &val, int connId) const;
+        void RPC_UpdatePlayerPosition(const std::variant<int, float, glm::vec2, std::string, glm::vec3> &val, int connId) const;
+        void RPC_UpdatePlayerFacingDirection(const std::variant<int, float, glm::vec2, std::string, glm::vec3> &val, int connId) const;
     };
 
 } // Game

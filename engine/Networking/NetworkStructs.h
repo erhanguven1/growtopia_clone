@@ -11,7 +11,7 @@
 #include <variant>
 #include <glm/glm.hpp>
 
-using SyncVarTypeVariant = std::variant<int, float, glm::vec2, std::string>;
+using SyncVarTypeVariant = std::variant<int, float, glm::vec2, std::string, glm::vec3>;
 
 enum class MessageTypes
 {
@@ -26,7 +26,8 @@ enum class SyncVarTypes
     INT,
     FLOAT,
     VEC2,
-    STRING
+    STRING,
+    VEC3
 };
 
 struct MsgData

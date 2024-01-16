@@ -236,6 +236,7 @@ namespace Engine
                 break;
             }
             case SyncVarTypes::STRING:
+            {
                 char param[384+1];
                 memcpy(&param, rmCallData.m_parameter, 385);
                 param[384]='\0';
@@ -247,6 +248,20 @@ namespace Engine
                         cmd(param,rmCallData.receiverId);
                     }
                 }
+                break;
+            }
+            case SyncVarTypes::VEC3:
+                glm::vec3 param;
+                memcpy(&param, rmCallData.m_parameter, sizeof(glm::vec3));
+                printf("%f,%f,%f", param.x, param.y, param.z);
+                if(!commandController.commands[rmCallData.m_methodName].empty())
+                {
+                    for(auto& cmd : commandController.commands[rmCallData.m_methodName])
+                    {
+                        cmd(param,rmCallData.receiverId);
+                    }
+                }
+
                 break;
         }
 

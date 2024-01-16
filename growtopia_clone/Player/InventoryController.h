@@ -17,9 +17,22 @@ namespace Game
     public:
         InventoryController()=delete;
         explicit InventoryController(int connId);
+
+        void onClickInventoryItem(InventoryItemData& inventoryItemData);
+
+        void useCurrentItem();
+        inline BlockType getCurrentItemType() const
+        {
+            if (chosenItem)
+                return chosenItem->getBlockType();
+
+            return BlockType::Empty;
+        }
+
     private:
         std::unique_ptr<InventoryData> inventoryData;
         std::unique_ptr<InventoryView> inventoryView;
+        std::unique_ptr<InventoryItemData> chosenItem;
 
         std::string m_LoadedInventoryXml = "";
 

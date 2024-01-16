@@ -32,6 +32,21 @@ namespace Game
     void InventoryController::onFinishedDownloadingXml()
     {
         inventoryData = std::make_unique<InventoryData>(m_LoadedInventoryXml);
-        inventoryView = std::make_unique<InventoryView>(inventoryData->m_inventoryItems);
+        std::vector<InventoryItemData *> inventoryItems;
+        inventoryView = std::make_unique<InventoryView>(inventoryData->m_inventoryItems, this);
+    }
+
+    void InventoryController::onClickInventoryItem(InventoryItemData& inventoryItemData)
+    {
+        printf("\nClicked on item. Type: %d ;;; Count: %d\n",inventoryItemData.getBlockType(), inventoryItemData.getCount());
+        chosenItem = std::make_unique<InventoryItemData>(inventoryItemData);
+    }
+
+    void InventoryController::useCurrentItem()
+    {
+        if (chosenItem == nullptr)
+            return;
+
+        chosenItem->decreaseItemCount(1);
     }
 } // Game

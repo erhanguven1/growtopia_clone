@@ -94,8 +94,8 @@ namespace Game
             //if(connId == Engine::Client::getInstance()->getConnectionId())
             //    return;
 
-            auto blockIndex = (glm::ivec2)std::get<glm::vec2>(val);
-            blocks[blockIndex.x][blockIndex.y]->setBlockType(BlockType::Dirt, true);
+            auto msg = (glm::ivec3)std::get<glm::vec3>(val);
+            blocks[msg.y][msg.z]->setBlockType((BlockType)msg.x, true);
         };
         client->getCommandController()->commands["RPC_OnBlockSet"].emplace_back(onBlockSet);
 
@@ -154,8 +154,14 @@ namespace Game
             else if(Engine::InputHandler::onPressMouseButton(GLFW_MOUSE_BUTTON_RIGHT))
             {
                 printf("\nSet block\n");
-                glm::vec2 blockIndex = {block_i, block_j};
-                Engine::Client::getInstance()->callCommand("CMD_SetBlock", blockIndex);
+
+                BlockType chosenBlockType = Player::myPlayer->getChosenInventoryItemData();
+                glm::vec3 msg = {(int)chosenBlockType,block_i, block_j};
+
+                if (chosenBlockType != BlockType::Empty)
+                {
+                    Engine::Client::getInstance()->callCommand("CMD_SetBlock", msg);
+                }
             }
         }
         if(Engine::InputHandler::isPressingKey(GLFW_KEY_Z))
