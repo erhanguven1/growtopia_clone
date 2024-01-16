@@ -47,7 +47,7 @@ namespace Game
         glm::vec4 c = {0,0.3f,0.5f,1};
         inventoryBg->getRenderer()->setColor(c);
 
-        for (int i = 0; i < 5; ++i)
+        /*for (int i = 0; i < 5; ++i)
         {
             auto frame = spawn<Engine::ImageObject>("/Users/erhanguven/CLionProjects/growtopia_clone/growtopia_clone/Resources/ui/square_ui.png",10,true);
             frame->getTransform()->setPositionX(-.495f + i * .25f);
@@ -60,7 +60,7 @@ namespace Game
             icon->getTransform()->setPositionY(-.75f);
             icon->getTransform()->setScaleX(.25f*.75f);
             icon->getTransform()->setScaleY(.25f);
-        }
+        }*/
 
         auto func = [&](const SyncVarTypeVariant& val, int connId)
         {

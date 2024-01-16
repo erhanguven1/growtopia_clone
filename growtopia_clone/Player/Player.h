@@ -6,7 +6,7 @@
 #define GROWTOPIA_CLONE_PLAYER_H
 
 #include "Gameobject/ImageObject.h"
-#include "Inventory.h"
+#include "InventoryController.h"
 
 namespace Game
 {
@@ -23,12 +23,11 @@ namespace Game
         }
     private:
         std::unique_ptr<Engine::ImageObject> character = nullptr;
-        std::unique_ptr<Inventory> inventory = nullptr;
+        std::unique_ptr<InventoryController> inventoryController = nullptr;
         uint connectionId;
         bool m_isMine;
         void RPC_UpdatePlayerPosition(const std::variant<int, float, glm::vec2, std::string> &val, int connId) const;
         void RPC_UpdatePlayerFacingDirection(const std::variant<int, float, glm::vec2, std::string> &val, int connId) const;
-        std::string m_LoadedInventoryXml = "";
     };
 
 } // Game

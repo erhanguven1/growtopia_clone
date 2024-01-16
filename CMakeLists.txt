@@ -47,9 +47,13 @@ set(SOURCE_FILES engine/EngineStarter.hpp
         engine/Gameobject/Button.h
         growtopia_clone/Scenes/GameScene.cpp
         growtopia_clone/Scenes/GameScene.h
-        growtopia_clone/Player/Inventory.cpp
-        growtopia_clone/Player/Inventory.h
+        growtopia_clone/Player/InventoryData.cpp
+        growtopia_clone/Player/InventoryData.h
         growtopia_clone/Common/BlockTypes.h
+        growtopia_clone/Player/InventoryView.cpp
+        growtopia_clone/Player/InventoryView.h
+        growtopia_clone/Player/InventoryController.cpp
+        growtopia_clone/Player/InventoryController.h
 )
 
 set(NETWORKING_SOURCE_FILES

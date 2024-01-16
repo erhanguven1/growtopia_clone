@@ -2,13 +2,13 @@
 // Created by erhan güven on 15.01.2024.
 //
 
-#include "Inventory.h"
+#include "InventoryData.h"
 #include <tinyxml2/tinyxml2.h>
 #include <string>
 
 namespace Game
 {
-    Inventory::Inventory(const std::string& xmlInventoryData)
+    InventoryData::InventoryData(const std::string& xmlInventoryData)
     {
         using namespace tinyxml2;
 
@@ -25,7 +25,7 @@ namespace Game
             auto blockType = (BlockType)atoi(tileType);
             int count = atoi(blockElement->FirstChildElement("Count")->GetText());
 
-            auto* invItem = new InventoryItem(blockType, count);
+            auto* invItem = new InventoryItemData(blockType, count);
 
             m_inventoryItems.push_back(invItem);
 
